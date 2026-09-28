@@ -1,0 +1,36 @@
+---
+import { displayPrice, isNew, type MenuItem } from '../data/menu';
+
+interface Props {
+  item: MenuItem;
+  showDescription?: boolean;
+}
+
+const { item, showDescription = true } = Astro.props;
+const tags = item.tags ?? [];
+const badges = [
+  ...(isNew(item) ? [{ label: 'New', cls: 'badge badge--new' }] : []),
+  ...(tags.includes('popular') ? [{ label: 'Popular', cls: 'badge' }] : []),
+  ...(tags.includes('signature') && !tags.includes('popular') ? [{ label: 'Signature', cls: 'badge' }] : []),
+  ...(tags.includes('spicy') ? [{ label: 'Spicy', cls: 'badge badge--spicy' }] : []),
+  ...(tags.includes('veg') ? [{ label: 'Veg', cls: 'badge badge--veg' }] : []),
+];
+const price = displayPrice(item);
+---
+<li class="mrow" data-tags={tags.join(' ')}>
+  <span class="mrow-name">
+    {item.name}
+    {badges.map((b) => <span class={b.cls}>{b.label}</span>)}
+    {item.zh && <small lang="zh-Hans">{item.zh}</small>}
+    {showDescription && item.description && <span class="mrow-desc">{item.description}</span>}
+  </span>
+  <span class="mrow-dots" aria-hidden="true"></span>
+  <span class="mrow-price">
+    {item.price !== null && item.price > 0 && price.startsWith('$') ? (
+      <data value={item.price.toFixed(2)}>{price}</data>
+    ) : (
+      price
+    )}
+    {item.unit && <small>{item.unit}</small>}
+  </span>
+</li>

@@ -1,0 +1,11 @@
+---
+/** Renders mixed English/中文 text with lang="zh-Hans" on the Chinese runs. */
+import { splitZh } from '../lib/text';
+
+interface Props {
+  text: string;
+}
+
+const runs = splitZh(Astro.props.text);
+---
+{runs.map((run) => (run.zh ? <span lang="zh-Hans">{run.text}</span> : run.text))}

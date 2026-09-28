@@ -1,0 +1,210 @@
+---
+/** "How Skewers in Pot works" 1-2-3 diagram. Prices come from menu data. */
+import { displayPrice, findItem } from '../data/menu';
+
+interface Props {
+  /** `dark` for use on the espresso band. */
+  tone?: 'light' | 'dark';
+  size?: 'compact' | 'large';
+}
+
+const { tone = 'light', size = 'compact' } = Astro.props;
+const stick = displayPrice(findItem('Skewers in Pot, your pick from the fridge'));
+const pot = displayPrice(findItem('Chicken Broth Chili Oil Pot (base)'));
+---
+<ol class:list={['flow', `flow--${tone}`, `flow--${size}`]} aria-label="How skewers in pot work">
+  <li>
+    <span class="ico" aria-hidden="true">
+      <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="13" y="5" width="38" height="54" rx="3"/><path d="M13 19h38M18 11v4"/><path d="M18 30h28M18 42h28M18 54h28" opacity=".45"/><path class="accent" d="M19 27l24-5M19 39l24-5M19 51l24-5"/><g class="accent-fill" stroke="none"><circle cx="27" cy="25.3" r="2.4"/><circle cx="33" cy="24" r="2.4"/><circle cx="27" cy="37.3" r="2.4"/><circle cx="33" cy="36" r="2.4"/><circle cx="27" cy="49.3" r="2.4"/><circle cx="33" cy="48" r="2.4"/></g></svg>
+    </span>
+    <span class="n" aria-hidden="true">1</span>
+    <h3>Pick from the fridge</h3>
+    <p>Choose as many skewers as you like from our self-serve fridge: <b>{stick}</b> a stick.</p>
+  </li>
+  <li>
+    <span class="ico" aria-hidden="true">
+      <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 36h24M5 36l3 10h14l3-10M10 46l-3 9M20 46l3 9"/><path class="accent" d="M4 31l22-5"/><path d="M36 30h24l-2.5 22a4 4 0 0 1-4 3.5H42.5a4 4 0 0 1-4-3.5Z"/><path d="M36 35h24"/><path class="accent" d="M44 30l-5-20M51 30l3-20"/><path d="M29.5 26l3-8" opacity=".5"/></svg>
+    </span>
+    <span class="n" aria-hidden="true">2</span>
+    <h3>BBQ or in the pot</h3>
+    <p>Have them BBQ-style, or in our chicken-broth chili oil pot. <b>Pot base {pot}.</b></p>
+  </li>
+  <li>
+    <span class="ico" aria-hidden="true">
+      <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M8 32h48c0 11-10.7 19-24 19S8 43 8 32Z"/><path d="M24 51v4h16v-4"/><path d="M14 36c6 3 30 3 36 0" opacity=".5"/><path class="accent" d="M38 28 55 9"/><ellipse class="accent" cx="36" cy="30" rx="4" ry="2.5" transform="rotate(-48 36 30)"/><path class="accent" d="M18 24c-1.6-2 1.6-3.2 0-5.2M25 22c-1.6-2 1.6-3.2 0-5.2"/></svg>
+    </span>
+    <span class="n" aria-hidden="true">3</span>
+    <h3>Mix your dip</h3>
+    <p>Finish at the self-serve sauce bar with one of our “Popular Sauce Mixes”.</p>
+  </li>
+</ol>
+
+<style>
+  .flow {
+    --flow-fg: var(--espresso);
+    --flow-muted: var(--tea);
+    --flow-accent: var(--cinnabar);
+    --flow-ring: var(--line);
+    --flow-bg: var(--paper);
+    position: relative;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+  }
+
+  .flow--dark {
+    --flow-fg: var(--parch-text);
+    --flow-muted: var(--dim-on-night);
+    --flow-accent: var(--cinnabar-on-dark);
+    --flow-ring: rgb(243 234 219 / 0.4);
+    --flow-bg: var(--espresso);
+  }
+
+  .flow::before {
+    content: '';
+    position: absolute;
+    top: 36px;
+    left: 36px;
+    right: calc(33% - 36px);
+    height: 1px;
+    background: var(--flow-ring);
+    opacity: 0.8;
+  }
+
+  .flow li {
+    position: relative;
+  }
+
+  .ico {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    place-items: center;
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    background: var(--flow-bg);
+    box-shadow: inset 0 0 0 1px var(--flow-ring);
+  }
+
+  .ico svg {
+    width: 44px;
+    height: 44px;
+    color: var(--flow-fg);
+  }
+
+  .ico svg :global(.accent) {
+    stroke: var(--flow-accent);
+  }
+
+  .ico svg :global(.accent-fill) {
+    fill: var(--flow-accent);
+  }
+
+  .n {
+    position: absolute;
+    top: -2px;
+    left: 54px;
+    z-index: 2;
+    display: grid;
+    place-items: center;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: var(--cinnabar);
+    color: #fff;
+    font: 600 0.78rem / 1 var(--font-body);
+  }
+
+  h3 {
+    margin-top: 1.1rem;
+    font-size: var(--step-1);
+    font-weight: 500;
+    color: var(--flow-fg);
+  }
+
+  p {
+    margin-top: 0.35rem;
+    color: var(--flow-muted);
+    font-size: 0.95rem;
+    max-width: 28ch;
+  }
+
+  p b {
+    color: var(--flow-fg);
+    font-weight: 600;
+  }
+
+  .flow--large .ico {
+    width: 88px;
+    height: 88px;
+  }
+
+  .flow--large .ico svg {
+    width: 54px;
+    height: 54px;
+  }
+
+  .flow--large::before {
+    top: 44px;
+    left: 44px;
+  }
+
+  .flow--large .n {
+    left: 66px;
+  }
+
+  .flow--large h3 {
+    font-size: var(--step-2);
+  }
+
+  .flow--large p {
+    font-size: 1.02rem;
+    max-width: 32ch;
+  }
+
+  @media (max-width: 39.99em) {
+    .flow {
+      grid-template-columns: 1fr;
+      gap: 1.4rem;
+    }
+
+    .flow::before,
+    .flow--large::before {
+      top: 36px;
+      bottom: 36px;
+      left: 36px;
+      right: auto;
+      width: 1px;
+      height: auto;
+    }
+
+    .flow li {
+      display: grid;
+      grid-template-columns: 72px 1fr;
+      column-gap: 1.1rem;
+      align-items: start;
+    }
+
+    .flow--large .ico {
+      width: 72px;
+      height: 72px;
+    }
+
+    .flow--large .n {
+      left: 54px;
+    }
+
+    .ico {
+      grid-row: span 2;
+    }
+
+    h3 {
+      margin-top: 0.6rem;
+    }
+
+    p {
+      max-width: none;
+    }
+  }
+</style>

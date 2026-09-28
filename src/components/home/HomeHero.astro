@@ -1,0 +1,248 @@
+---
+import Icon from '../Icon.astro';
+import OpenStatus from '../OpenStatus.astro';
+import HeroPicture from '../HeroPicture.astro';
+import { SITE, telHref } from '../../data/site';
+---
+<section class="hero" aria-labelledby="hero-title">
+  <HeroPicture photo="noodle-spread" focus="60-68" class="hero__media" />
+  <div class="hero__scrim" aria-hidden="true"></div>
+
+  <div class="wrap hero__inner">
+    <div class="hero__brush" aria-hidden="true">
+      <span class="hero__vertical zh-display" lang="zh-Hans">星月小馆</span>
+      <span class="seal seal--lg" lang="zh-Hans">手作</span>
+    </div>
+    <div class="hero__copy">
+      <h1 class="hero__title" id="hero-title">
+        <span class="hero__kicker">Starry Coop <span lang="zh-Hans">星月小馆</span> · Ambleside, West Vancouver</span>
+        A hidden kitchen, <em>upstairs</em> on Marine&nbsp;Drive.
+      </h1>
+      <p class="hero__lede">
+        Skewers in pot, handmade noodles and dumplings, sizzling sharing pots and Taiwanese comfort food,
+        freshly made to order by our owner-chef.
+      </p>
+      <div class="btn-row hero__ctas" data-hero-ctas>
+        <a class="btn btn-seal" href="/booking/" data-astro-prefetch>Reserve a table <Icon name="arrow" /></a>
+        <a class="btn btn-ghost-light" href="/menu/" data-astro-prefetch>See the menu</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="hero__facts">
+    <ul class="wrap facts">
+      <li>
+        <span class="stars" aria-hidden="true"><Icon name="star" /><Icon name="star" /><Icon name="star" /><Icon name="star" /><Icon name="star" /></span>
+        <a href={SITE.links.googleReviews} target="_blank" rel="noopener">
+          <strong>{SITE.rating.value}</strong> · {SITE.rating.count} Google reviews<span class="sr-only"> (opens in a new tab)</span>
+        </a>
+      </li>
+      <li><OpenStatus variant="plain" /></li>
+      <li><Icon name="cup" /><span>Free coffee &amp; ice cream, all day</span></li>
+      <li class="facts__phone"><Icon name="phone" /><a class="num" href={telHref}>{SITE.phone.display}</a></li>
+    </ul>
+  </div>
+</section>
+
+<style>
+  .hero {
+    position: relative;
+    isolation: isolate;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    min-height: clamp(620px, 100svh, 920px);
+    padding-top: var(--header-h);
+    background: var(--night);
+    color: var(--parch-text);
+    overflow: hidden;
+  }
+
+  .hero :global(.hero__media) {
+    position: absolute;
+    inset: 0;
+    z-index: -2;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .hero__scrim {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background:
+      linear-gradient(180deg, rgb(33 22 17 / 0.78) 0%, rgb(33 22 17 / 0.35) 12%, rgb(33 22 17 / 0) 24%),
+      linear-gradient(0deg, rgb(33 22 17 / 0.78) 0%, rgb(33 22 17 / 0) 34%),
+      linear-gradient(90deg, rgb(33 22 17 / 0.92) 0%, rgb(33 22 17 / 0.84) 36%, rgb(33 22 17 / 0.45) 58%, rgb(33 22 17 / 0.06) 84%);
+  }
+
+  .hero :global(:focus-visible) {
+    outline-color: var(--focus-dark);
+  }
+
+  .hero__inner {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: clamp(1.5rem, 3vw, 3rem);
+    align-items: end;
+    padding-bottom: clamp(2.5rem, 5vw, 4.5rem);
+  }
+
+  .hero__brush {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.1rem;
+    padding-bottom: 0.4rem;
+  }
+
+  .hero__vertical {
+    writing-mode: vertical-rl;
+    font: 600 clamp(2.1rem, 1.5rem + 1.8vw, 3.1rem) / 1 var(--font-cjk-display);
+    letter-spacing: 0.14em;
+    color: var(--parch-text);
+    opacity: 0.92;
+  }
+
+  .hero__copy {
+    max-width: 660px;
+  }
+
+  .hero__kicker {
+    display: block;
+    margin-bottom: 1.3rem;
+    font: 600 var(--step--1) / 1.4 var(--font-body);
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--parch-text);
+  }
+
+  .hero__kicker [lang='zh-Hans'] {
+    letter-spacing: 0.1em;
+  }
+
+  .hero__title {
+    font-size: var(--step-5);
+    font-weight: 350;
+    line-height: 1.02;
+    letter-spacing: -0.02em;
+    color: var(--parch-text);
+  }
+
+  .hero__title em {
+    font-style: italic;
+    font-weight: 300;
+    color: #f6d9c8;
+  }
+
+  .hero__lede {
+    margin-top: 1.4rem;
+    max-width: 38ch;
+    font: 300 var(--step-1) / 1.5 var(--font-display);
+    color: var(--parch-text);
+  }
+
+  .hero__ctas {
+    margin-top: 2rem;
+  }
+
+  .hero__facts {
+    border-top: 1px solid rgb(243 234 219 / 0.2);
+    background: rgb(33 22 17 / 0.66);
+    -webkit-backdrop-filter: blur(6px);
+    backdrop-filter: blur(6px);
+  }
+
+  .facts {
+    display: grid;
+    grid-template-columns: repeat(4, auto);
+    justify-content: space-between;
+    gap: 1rem 2rem;
+    padding-block: 1.05rem;
+    font-size: 0.92rem;
+  }
+
+  .facts li {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    white-space: nowrap;
+  }
+
+  .facts li > :global(svg) {
+    width: 18px;
+    height: 18px;
+    flex: none;
+    color: var(--dim-on-night);
+  }
+
+  .facts a {
+    text-decoration: none;
+  }
+
+  .facts a:hover {
+    text-decoration: underline;
+    text-underline-offset: 0.25em;
+  }
+
+  .facts .stars {
+    color: var(--price-on-dark);
+  }
+
+  @media (max-width: 63.99em) {
+    .facts {
+      grid-template-columns: repeat(2, auto);
+      justify-content: start;
+    }
+  }
+
+  @media (max-width: 47.99em) {
+    .hero {
+      min-height: max(620px, 92svh);
+    }
+
+    .hero :global(.hero__media) {
+      object-position: 52% 58%;
+    }
+
+    .hero__scrim {
+      background:
+        linear-gradient(180deg, rgb(33 22 17 / 0.55) 0%, rgb(33 22 17 / 0) 22%),
+        linear-gradient(0deg, rgb(33 22 17 / 0.92) 0%, rgb(33 22 17 / 0.8) 42%, rgb(33 22 17 / 0.25) 70%, rgb(33 22 17 / 0.05) 100%);
+    }
+
+    .hero__inner {
+      grid-template-columns: 1fr;
+      padding-bottom: 1.75rem;
+    }
+
+    .hero__brush {
+      display: none;
+    }
+
+    .hero__kicker {
+      letter-spacing: 0.12em;
+      margin-bottom: 1rem;
+    }
+
+    .hero__ctas :global(.btn) {
+      flex: 1 1 auto;
+    }
+
+    .facts {
+      grid-template-columns: 1fr 1fr;
+      gap: 0.7rem 1rem;
+      font-size: 0.84rem;
+      padding-block: 0.9rem;
+    }
+
+    .facts li {
+      white-space: normal;
+    }
+
+    .facts__phone {
+      display: none !important;
+    }
+  }
+</style>

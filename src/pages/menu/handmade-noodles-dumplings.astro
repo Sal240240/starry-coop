@@ -1,0 +1,156 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import CtaBand from '../../components/CtaBand.astro';
+import DumplingDiagram from '../../components/DumplingDiagram.astro';
+import Eyebrow from '../../components/Eyebrow.astro';
+import Icon from '../../components/Icon.astro';
+import LineArt from '../../components/LineArt.astro';
+import MenuItemRow from '../../components/MenuItemRow.astro';
+import PageHero from '../../components/PageHero.astro';
+import Photo from '../../components/Photo.astro';
+import ReviewQuote from '../../components/ReviewQuote.astro';
+import { menuCategory } from '../../data/menu';
+import { PAGES } from '../../data/pages';
+
+const page = PAGES.handmade;
+const crumbs = [
+  { name: 'Menu', path: '/menu/' },
+  { name: 'Handmade noodles & dumplings', path: page.path },
+];
+const noodles = menuCategory('noodles-rice').items.filter((i) => /noodle/i.test(i.name));
+---
+<BaseLayout title={page.title} description={page.description} ogPhoto={page.ogPhoto} crumbs={crumbs}>
+  <PageHero
+    photo="handmade-dumplings"
+    focus="50-50"
+    eyebrow={{ zh: '手工面 · 饺子', en: 'Made by hand, every day' }}
+    title={page.h1}
+    lede="Chewy noodles and juicy dumplings, made by hand in our kitchen and cooked to order."
+    crumbs={crumbs}
+  >
+    <a class="btn btn-seal" href="/booking/">Reserve a table <Icon name="arrow" /></a>
+    <a class="btn btn-ghost-light" href="/menu/#dumplings">Dumplings on the menu</a>
+  </PageHero>
+
+  <section class="section" aria-labelledby="why-title">
+    <div class="wrap split">
+      <div class="prose">
+        <Eyebrow zh="纯手工" en="Why handmade" />
+        <h2 class="h2" id="why-title">You can taste the difference.</h2>
+        <p>
+          Our dumplings are made fresh by hand every day, with carefully selected ingredients and thin, delicate
+          wrappers, and every one is packed with juicy filling. Our noodles are made by hand too, so they arrive
+          chewy, springy and fresh.
+        </p>
+        <p>Guests notice. As one put it after lunch:</p>
+        <ReviewQuote id="authentic-dumplings" />
+      </div>
+      <figure class="frame ratio-4-5 why-photo">
+        <Photo photo="steamed-dumplings" focus="50-65" sizes="(min-width: 56.25em) 460px, 100vw" maxWidth={620} />
+        <figcaption class="why-cap">Dumplings, steamed in bamboo</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section class="section band" aria-labelledby="dumpling-title">
+    <div class="wrap wrap--narrow">
+      <Eyebrow zh="四种做法" en="Four ways to enjoy them" />
+      <h2 class="h2" id="dumpling-title">Choose a style, then a filling.</h2>
+      <p class="lede dumpling-lede">Ten pieces per order, boiled, in chili oil, steamed or pan-fried.</p>
+      <DumplingDiagram id="handmade-diagram" />
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="noodle-title">
+    <div class="wrap split split--reverse">
+      <div>
+        <Eyebrow zh="手工面" en="Handmade noodles" />
+        <h2 class="h2" id="noodle-title">Chewy, fragrant, and many under $10.</h2>
+        <ul class="noodle-list">
+          {noodles.map((item) => <MenuItemRow item={item} />)}
+        </ul>
+        <ReviewQuote id="hidden-gem-noodles" class="noodle-quote" />
+      </div>
+      <figure class="frame ratio-4-5 noodle-photo">
+        <Photo photo="noodle-spread" focus="50-65" sizes="(min-width: 56.25em) 460px, 100vw" maxWidth={620} />
+        <figcaption class="why-cap">Scallion oil noodles with charred scallion and sesame</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section class="section band" aria-labelledby="sauce-title">
+    <div class="wrap sauces">
+      <LineArt name="sauces" class="sauces__art" />
+      <div>
+        <Eyebrow zh="自制酱料" en="Made in-house" />
+        <h2 class="h2" id="sauce-title">House-made sauces, too.</h2>
+        <p class="sauces__text">
+          The sauces are made from scratch in our kitchen, and the self-serve sauce bar lets you mix your own dip for
+          dumplings and skewers.
+        </p>
+        <ReviewQuote id="andrea" class="sauces__quote" />
+      </div>
+    </div>
+  </section>
+
+  <CtaBand title="Come for the noodles. Stay for the dumplings." reviewId="beef-noodle-taiwan" />
+</BaseLayout>
+
+<style>
+  .why-photo,
+  .noodle-photo {
+    box-shadow: 0 0 0 1px var(--rule);
+  }
+
+  .why-cap {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    padding: 1.4rem 0.9rem 0.7rem;
+    font-size: 0.82rem;
+    color: var(--parch-text);
+    background: linear-gradient(0deg, rgb(33 22 17 / 0.8), rgb(33 22 17 / 0));
+  }
+
+  .dumpling-lede {
+    margin: 0.9rem 0 2rem;
+  }
+
+  .noodle-list {
+    margin-top: 1.5rem;
+  }
+
+  :global(.noodle-quote),
+  :global(.sauces__quote) {
+    margin-top: 1.75rem;
+  }
+
+  .sauces {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: clamp(1.5rem, 4vw, 3.5rem);
+    align-items: center;
+    max-width: 960px;
+  }
+
+  .sauces :global(.sauces__art) {
+    width: 140px;
+    height: 140px;
+  }
+
+  .sauces__text {
+    margin-top: 1rem;
+    max-width: 56ch;
+  }
+
+  @media (max-width: 40em) {
+    .sauces {
+      grid-template-columns: 1fr;
+    }
+    .sauces :global(.sauces__art) {
+      width: 96px;
+      height: 96px;
+    }
+  }
+</style>

@@ -1,0 +1,182 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import CtaBand from '../../components/CtaBand.astro';
+import Eyebrow from '../../components/Eyebrow.astro';
+import Icon from '../../components/Icon.astro';
+import LineArt from '../../components/LineArt.astro';
+import MenuItemRow from '../../components/MenuItemRow.astro';
+import PageHero from '../../components/PageHero.astro';
+import Photo from '../../components/Photo.astro';
+import ReviewCard from '../../components/ReviewCard.astro';
+import { displayPrice, findItem, menuCategory } from '../../data/menu';
+import { PAGES } from '../../data/pages';
+import { SITE, telHref } from '../../data/site';
+
+const page = PAGES.groups;
+const crumbs = [
+  { name: 'Menu', path: '/menu/' },
+  { name: 'Hot pots & groups', path: page.path },
+];
+const pots = menuCategory('hot-pots').items.filter((i) => !i.name.startsWith('Peking Duck'));
+const duck = findItem('Peking Duck, Two Ways');
+---
+<BaseLayout title={page.title} description={page.description} ogPhoto={page.ogPhoto} crumbs={crumbs} headerTone="solid">
+  <PageHero
+    variant="split"
+    photo="coral-booths"
+    focus="50-65"
+    eyebrow={{ zh: '分享锅', en: 'Made for the middle of the table' }}
+    title={page.h1}
+    lede="Big, generous pots and plates for sharing, plus a Peking duck served two ways. Bring the family, bring your friends."
+    crumbs={crumbs}
+  >
+    <a class="btn btn-seal num" href={telHref}><Icon name="phone" />Call {SITE.phone.display}</a>
+    <a class="btn btn-ghost" href="/menu/#hot-pots">See the menu</a>
+  </PageHero>
+
+  <section class="section" aria-labelledby="pots-title">
+    <div class="wrap pots">
+      <div>
+        <Eyebrow zh="分享锅 · 滋补鸡汤" en="Sharing hot pots & soups" />
+        <h2 class="h2" id="pots-title">Something bubbling for everyone.</h2>
+        <ul class="pots__list">
+          {pots.map((item) => <MenuItemRow item={item} />)}
+        </ul>
+        <p class="fine">Dine-in prices, subject to change.</p>
+      </div>
+      <LineArt name="pot" class="pots__art" />
+    </div>
+  </section>
+
+  <section class="section band" aria-labelledby="duck-title">
+    <div class="wrap duck">
+      <LineArt name="duck" class="duck__art" />
+      <div>
+        <Eyebrow zh="北京烤鸭" en="New on the menu" />
+        <h2 class="h2" id="duck-title">Peking duck, two ways.</h2>
+        <p class="duck__text">
+          Our Peking duck is served two ways for {displayPrice(duck)}, a proper centrepiece for a birthday, a family
+          dinner or a night out with friends. Ask us about it when you book.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="group-title">
+    <div class="wrap split">
+      <figure class="frame ratio-4-5 group-photo">
+        <Photo photo="skewers-gingham" focus="50-50" sizes="(min-width: 56.25em) 460px, 100vw" maxWidth={620} />
+        <figcaption class="group-cap">A skewer tray, made for sharing</figcaption>
+      </figure>
+      <div class="prose">
+        <Eyebrow zh="聚餐" en="Bringing a group?" />
+        <h2 class="h2" id="group-title">Order a little of everything.</h2>
+        <p>
+          Our menu is built for sharing: trays of skewers, sharing pots, handmade dumplings and noodles, wok
+          dishes and bubble tea. The more of you there are, the more you get to try.
+        </p>
+        <ul>
+          <li>Call ahead for larger groups so we can plan your table.</li>
+          <li>Free coffee and ice cream all day, for everyone at the table.</li>
+          <li>Kid-friendly dishes, a reading and games corner, and TVs for the game.</li>
+        </ul>
+        <p><a class="btn btn-seal num" href={telHref}><Icon name="phone" />Call {SITE.phone.display}</a></p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section band" aria-labelledby="group-reviews">
+    <div class="wrap">
+      <Eyebrow zh="食评" en="Families & friends" />
+      <h2 class="h2" id="group-reviews">Made for families and friends.</h2>
+      <ul class="review-grid">
+        <li><ReviewCard id="zh-family" /></li>
+        <li><ReviewCard id="welcoming" /></li>
+        <li><ReviewCard id="big-plate-chicken" /></li>
+      </ul>
+    </div>
+  </section>
+
+  <CtaBand title="Get the gang together." reviewId="kung-pao" />
+</BaseLayout>
+
+<style>
+  .pots {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 3rem;
+    align-items: start;
+  }
+
+  .pots__list {
+    margin: 1.5rem 0 1rem;
+    max-width: 760px;
+  }
+
+  .pots :global(.pots__art) {
+    width: 160px;
+    height: 160px;
+  }
+
+  .duck {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: clamp(1.5rem, 4vw, 3.5rem);
+    align-items: center;
+    max-width: 960px;
+  }
+
+  .duck :global(.duck__art) {
+    width: 150px;
+    height: 150px;
+  }
+
+  .duck__text {
+    margin-top: 1rem;
+    max-width: 56ch;
+  }
+
+  .group-photo {
+    box-shadow: 0 0 0 1px var(--rule);
+  }
+
+  .group-cap {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    padding: 1.4rem 0.9rem 0.7rem;
+    font-size: 0.82rem;
+    color: var(--parch-text);
+    background: linear-gradient(0deg, rgb(33 22 17 / 0.8), rgb(33 22 17 / 0));
+  }
+
+  .review-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1.75rem;
+    margin-top: 2.5rem;
+  }
+
+  @media (max-width: 56.24em) {
+    .pots {
+      grid-template-columns: 1fr;
+    }
+    .pots :global(.pots__art) {
+      display: none;
+    }
+    .review-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 40em) {
+    .duck {
+      grid-template-columns: 1fr;
+    }
+    .duck :global(.duck__art) {
+      width: 96px;
+      height: 96px;
+    }
+  }
+</style>

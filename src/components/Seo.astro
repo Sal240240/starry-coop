@@ -1,0 +1,45 @@
+---
+import { getImage } from 'astro:assets';
+import { PHOTOS, type PhotoKey } from '../data/photos';
+import { SITE } from '../data/site';
+
+interface Props {
+  title: string;
+  description: string;
+  ogPhoto: PhotoKey;
+  noindex?: boolean;
+}
+
+const { title, description, ogPhoto, noindex = false } = Astro.props;
+
+if (title.length > 65) console.warn(`[seo] Title over 65 chars on ${Astro.url.pathname}: "${title}"`);
+if (description.length < 110 || description.length > 160) {
+  console.warn(`[seo] Description length ${description.length} on ${Astro.url.pathname}`);
+}
+
+const site = Astro.site!;
+const canonical = new URL(Astro.url.pathname, site).href;
+const og = await getImage({ src: PHOTOS[ogPhoto].src, width: 1200, height: 630, fit: 'cover', format: 'jpg', quality: 78 });
+const ogUrl = new URL(og.src, site).href;
+const robots = noindex || !__SITE_INDEXABLE__ ? 'noindex, nofollow' : 'index, follow, max-image-preview:large';
+---
+<title>{title}</title>
+<meta name="description" content={description} />
+{!noindex && <link rel="canonical" href={canonical} />}
+<meta name="robots" content={robots} />
+
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content={`${SITE.name} ${SITE.nameZh}`} />
+<meta property="og:locale" content="en_CA" />
+<meta property="og:title" content={title} />
+<meta property="og:description" content={description} />
+<meta property="og:url" content={canonical} />
+<meta property="og:image" content={ogUrl} />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:alt" content={PHOTOS[ogPhoto].alt} />
+<meta name="twitter:card" content="summary_large_image" />
+
+<meta name="geo.region" content="CA-BC" />
+<meta name="geo.placename" content={SITE.address.city} />
+<meta name="geo.position" content={`${SITE.geo.lat};${SITE.geo.lng}`} />

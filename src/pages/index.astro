@@ -1,0 +1,27 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import DumplingsBand from '../components/home/DumplingsBand.astro';
+import HiddenKitchen from '../components/home/HiddenKitchen.astro';
+import HomeHero from '../components/home/HomeHero.astro';
+import HomeReviews from '../components/home/HomeReviews.astro';
+import ReserveBand from '../components/home/ReserveBand.astro';
+import Signatures from '../components/home/Signatures.astro';
+import SkewersBand from '../components/home/SkewersBand.astro';
+import VisitSection from '../components/home/VisitSection.astro';
+import Welcome from '../components/home/Welcome.astro';
+import { PAGES } from '../data/pages';
+
+const page = PAGES.home;
+---
+<BaseLayout title={page.title} description={page.description} ogPhoto={page.ogPhoto}>
+  <HomeHero />
+  <Welcome />
+  <div class="wrap" aria-hidden="true"><div class="divider"><svg><use href="#i-moon" /></svg></div></div>
+  <Signatures />
+  <DumplingsBand />
+  <SkewersBand />
+  <HiddenKitchen />
+  <HomeReviews />
+  <VisitSection />
+  <ReserveBand />
+</BaseLayout>

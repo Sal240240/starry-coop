@@ -1,0 +1,313 @@
+---
+/**
+ * Table-request form (only rendered when PUBLIC_BOOKING_ENDPOINT is set).
+ * Validation runs in the browser (scripts/booking-form.ts) with exactly the same
+ * rules as the Lambda (lib/booking.ts). Honeypot + fill-time checks deter bots.
+ */
+import Icon from './Icon.astro';
+import { BOOKING_LIMITS } from '../lib/booking';
+import { BOOKING_ENDPOINT } from '../lib/booking-endpoint';
+import { SITE, telHref } from '../data/site';
+
+const partySizes = Array.from({ length: BOOKING_LIMITS.maxParty }, (_, i) => i + 1);
+const occasions = ['Birthday', 'Anniversary', 'Family dinner', 'Business meal', 'Other'];
+---
+<div class="booking">
+  <form
+    class="booking-form"
+    data-booking-form
+    data-endpoint={BOOKING_ENDPOINT}
+    data-phone={SITE.phone.e164}
+    data-sms={String(SITE.phone.acceptsSms)}
+    novalidate
+    aria-describedby="booking-intro"
+  >
+    <p id="booking-intro" class="fine">
+      All fields marked <span aria-hidden="true">*</span><span class="sr-only">with an asterisk</span> are required.
+      This is a request; your table is confirmed when we call you back.
+    </p>
+
+    <noscript>
+      <p class="booking-noscript">
+        Online requests need JavaScript. Please call us at <a href={telHref}>{SITE.phone.display}</a> to reserve.
+      </p>
+    </noscript>
+
+    <fieldset>
+      <legend>Your visit</legend>
+      <div class="grid-3">
+        <div class="field">
+          <label for="bk-date">Date <span aria-hidden="true">*</span></label>
+          <input id="bk-date" name="date" type="date" required aria-describedby="bk-date-err" />
+          <p class="field-error" id="bk-date-err" data-error-for="date" hidden></p>
+        </div>
+        <div class="field">
+          <label for="bk-time">Arrival time <span aria-hidden="true">*</span></label>
+          <select id="bk-time" name="time" required aria-describedby="bk-time-err">
+            <option value="">Choose a date first</option>
+          </select>
+          <p class="field-error" id="bk-time-err" data-error-for="time" hidden></p>
+        </div>
+        <div class="field">
+          <label for="bk-party">Guests <span aria-hidden="true">*</span></label>
+          <select id="bk-party" name="partySize" required aria-describedby="bk-party-hint bk-party-err">
+            {partySizes.map((n) => <option value={n} selected={n === 2}>{n} {n === 1 ? 'guest' : 'guests'}</option>)}
+          </select>
+          <p class="field-hint" id="bk-party-hint">Larger group? Please call us.</p>
+          <p class="field-error" id="bk-party-err" data-error-for="partySize" hidden></p>
+        </div>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Your details</legend>
+      <div class="grid-2">
+        <div class="field">
+          <label for="bk-name">Name <span aria-hidden="true">*</span></label>
+          <input id="bk-name" name="name" type="text" autocomplete="name" required maxlength={BOOKING_LIMITS.maxNameLength} aria-describedby="bk-name-err" />
+          <p class="field-error" id="bk-name-err" data-error-for="name" hidden></p>
+        </div>
+        <div class="field">
+          <label for="bk-phone">Phone <span aria-hidden="true">*</span></label>
+          <input id="bk-phone" name="phone" type="tel" autocomplete="tel" inputmode="tel" required aria-describedby="bk-phone-hint bk-phone-err" />
+          <p class="field-hint" id="bk-phone-hint">We’ll call this number to confirm.</p>
+          <p class="field-error" id="bk-phone-err" data-error-for="phone" hidden></p>
+        </div>
+        <div class="field">
+          <label for="bk-email">Email <span class="optional">(optional)</span></label>
+          <input id="bk-email" name="email" type="email" autocomplete="email" aria-describedby="bk-email-err" />
+          <p class="field-error" id="bk-email-err" data-error-for="email" hidden></p>
+        </div>
+        <div class="field">
+          <label for="bk-occasion">Occasion <span class="optional">(optional)</span></label>
+          <select id="bk-occasion" name="occasion">
+            <option value="">None</option>
+            {occasions.map((o) => <option value={o}>{o}</option>)}
+          </select>
+        </div>
+      </div>
+      <div class="field">
+        <label for="bk-notes">Notes <span class="optional">(optional)</span></label>
+        <textarea id="bk-notes" name="notes" rows="3" maxlength={BOOKING_LIMITS.maxNotesLength} aria-describedby="bk-notes-hint bk-notes-err"></textarea>
+        <p class="field-hint" id="bk-notes-hint">High chair, allergies, dishes you’d like us to prepare for…</p>
+        <p class="field-error" id="bk-notes-err" data-error-for="notes" hidden></p>
+      </div>
+    </fieldset>
+
+    <div class="hp" aria-hidden="true">
+      <label for="bk-company">Company</label>
+      <input id="bk-company" name="company" type="text" tabindex="-1" autocomplete="off" />
+    </div>
+
+    <div class="submit-row">
+      <button class="btn btn-seal" type="submit">Send request <Icon name="arrow" /></button>
+      <p class="fine">
+        By sending, you agree we may contact you about this request. See our <a class="text-link" href="/privacy/">privacy policy</a>.
+      </p>
+    </div>
+    <p class="form-status" data-booking-status role="status" aria-live="polite"></p>
+  </form>
+
+  <div class="panel panel--success" data-booking-success hidden tabindex="-1">
+    <span class="panel-icon" aria-hidden="true"><Icon name="check" /></span>
+    <h3>Request sent. Thank you!</h3>
+    <p><strong data-booking-summary></strong></p>
+    <p>We’ll call you to confirm, usually during opening hours. Your table isn’t confirmed until we do.</p>
+    <p class="fine">Reference: <span data-booking-ref></span></p>
+  </div>
+
+  <div class="panel panel--fallback" data-booking-fallback hidden tabindex="-1">
+    <span class="panel-icon" aria-hidden="true"><Icon name="phone" /></span>
+    <h3>Please call us to confirm</h3>
+    <p data-fallback-reason></p>
+    <p><strong data-fallback-summary></strong></p>
+    <div class="btn-row">
+      <a class="btn btn-seal num" href={telHref}><Icon name="phone" />Call {SITE.phone.display}</a>
+      <a class="btn btn-ghost" data-sms-link hidden href={telHref}><Icon name="message" />Send as a text</a>
+      <button class="btn btn-ghost" type="button" data-copy-details hidden><Icon name="copy" />Copy my details</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  import '../scripts/booking-form';
+</script>
+
+<style>
+  .booking-form {
+    display: grid;
+    gap: 1.6rem;
+  }
+
+  fieldset {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    min-width: 0;
+    display: grid;
+    gap: 1.1rem;
+  }
+
+  legend {
+    margin-bottom: 0.9rem;
+    font: 500 var(--step-1) var(--font-display);
+    color: var(--espresso);
+  }
+
+  .grid-3 {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1rem;
+  }
+
+  .grid-2 {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+  }
+
+  .field {
+    display: grid;
+    gap: 0.4rem;
+    align-content: start;
+  }
+
+  label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--tea);
+  }
+
+  .optional {
+    font-weight: 500;
+    letter-spacing: 0;
+    text-transform: none;
+  }
+
+  input,
+  select,
+  textarea {
+    width: 100%;
+    min-height: 48px;
+    padding: 0.65rem 0.85rem;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--rice);
+    color: var(--ink);
+    font: 500 1rem var(--font-body);
+  }
+
+  select {
+    appearance: none;
+    padding-right: 2.4rem;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'><path d='M1 1.5 6 6.5 11 1.5' fill='none' stroke='%234B2E22' stroke-width='1.5'/></svg>");
+    background-repeat: no-repeat;
+    background-position: right 0.9rem center;
+  }
+
+  select:disabled {
+    opacity: 0.65;
+  }
+
+  textarea {
+    resize: vertical;
+    min-height: 96px;
+  }
+
+  input:hover,
+  select:hover,
+  textarea:hover {
+    border-color: var(--espresso);
+  }
+
+  [aria-invalid='true'] {
+    border-color: var(--cinnabar-deep);
+    box-shadow: inset 0 0 0 1px var(--cinnabar-deep);
+  }
+
+  .field-hint {
+    font-size: 0.84rem;
+    color: var(--tea);
+  }
+
+  .field-error {
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: var(--cinnabar-deep);
+  }
+
+  .hp {
+    position: absolute;
+    left: -10000px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+  }
+
+  .submit-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1rem 1.5rem;
+  }
+
+  .submit-row .fine {
+    max-width: 44ch;
+  }
+
+  .form-status {
+    min-height: 1.5em;
+    font-weight: 600;
+    color: var(--espresso);
+  }
+
+  .booking-noscript {
+    padding: 1rem 1.1rem;
+    background: var(--paper-2);
+    border-left: 2px solid var(--cinnabar);
+  }
+
+  .panel {
+    padding: clamp(1.5rem, 3vw, 2.4rem);
+    background: var(--rice);
+    box-shadow: 0 0 0 1px var(--rule);
+    display: grid;
+    gap: 0.8rem;
+  }
+
+  .panel:focus {
+    outline: none;
+  }
+
+  .panel h3 {
+    font-size: var(--step-2);
+  }
+
+  .panel-icon {
+    display: grid;
+    place-items: center;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: var(--cinnabar);
+    color: #fff;
+  }
+
+  .panel--success .panel-icon {
+    background: var(--jade);
+  }
+
+  .panel-icon :global(svg) {
+    width: 24px;
+    height: 24px;
+  }
+
+  @media (max-width: 47.99em) {
+    .grid-3,
+    .grid-2 {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

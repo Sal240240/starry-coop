@@ -1,0 +1,81 @@
+---
+/** Google rating shown as plain text (no review markup), dated, with source links. */
+import Icon from './Icon.astro';
+import { SITE } from '../data/site';
+
+interface Props {
+  showAllLink?: boolean;
+}
+
+const { showAllLink = true } = Astro.props;
+---
+<div class="rating">
+  <p class="rating__big" aria-hidden="true">{SITE.rating.value}</p>
+  <div class="rating__meta">
+    <span class="stars rating__stars" aria-hidden="true">
+      <Icon name="star" /><Icon name="star" /><Icon name="star" /><Icon name="star" /><Icon name="star" />
+    </span>
+    <p>
+      <strong>{SITE.rating.value} out of 5</strong> from {SITE.rating.count} reviews on Google
+      <span class="rating__asof">as of {SITE.rating.asOf}</span>
+    </p>
+  </div>
+  <div class="rating__actions">
+    {showAllLink && <a class="link-arrow" href="/reviews/">Read guest reviews <Icon name="arrow" /></a>}
+    <a class="link-arrow" href={SITE.links.googleReviews} target="_blank" rel="noopener">
+      See all on Google <Icon name="ext" /><span class="sr-only"> (opens in a new tab)</span>
+    </a>
+  </div>
+</div>
+
+<style>
+  .rating {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    align-items: center;
+    gap: 0.4rem 1.2rem;
+  }
+
+  .rating__big {
+    grid-row: span 2;
+    font: 300 clamp(4rem, 3rem + 4vw, 6.2rem) / 0.85 var(--font-display);
+    color: var(--espresso);
+    letter-spacing: -0.04em;
+  }
+
+  .rating__stars :global(svg) {
+    width: 20px;
+    height: 20px;
+  }
+
+  .rating__meta p {
+    margin-top: 0.35rem;
+    font-size: 0.92rem;
+    color: var(--tea);
+    line-height: 1.4;
+  }
+
+  .rating__meta strong {
+    color: var(--ink);
+    font-weight: 600;
+  }
+
+  .rating__asof {
+    display: block;
+    font-size: 0.84rem;
+  }
+
+  .rating__actions {
+    grid-column: 2;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem 1.6rem;
+    margin-top: 0.6rem;
+  }
+
+  @media (max-width: 29.99em) {
+    .rating__actions {
+      grid-column: 1 / -1;
+    }
+  }
+</style>

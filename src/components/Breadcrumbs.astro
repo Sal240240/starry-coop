@@ -1,0 +1,62 @@
+---
+import type { Crumb } from '../lib/schema';
+
+interface Props {
+  crumbs: Crumb[];
+  tone?: 'light' | 'dark';
+}
+
+const { crumbs, tone = 'light' } = Astro.props;
+const trail: Crumb[] = [{ name: 'Home', path: '/' }, ...crumbs];
+---
+<nav class:list={['crumbs', `crumbs--${tone}`]} aria-label="Breadcrumb">
+  <ol>
+    {trail.map((c, i) => (
+      <li>
+        {i === trail.length - 1 ? (
+          <span aria-current="page">{c.name}</span>
+        ) : (
+          <a href={c.path}>{c.name}</a>
+        )}
+      </li>
+    ))}
+  </ol>
+</nav>
+
+<style>
+  .crumbs ol {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.2rem 0.55rem;
+    font-size: 0.82rem;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+  }
+
+  .crumbs li + li::before {
+    content: '/';
+    margin-right: 0.55rem;
+    opacity: 0.55;
+  }
+
+  .crumbs a {
+    text-decoration: none;
+  }
+
+  .crumbs a:hover {
+    text-decoration: underline;
+    text-underline-offset: 0.25em;
+  }
+
+  .crumbs--light {
+    color: var(--tea);
+  }
+
+  .crumbs--dark {
+    color: var(--parch-text);
+  }
+
+  [aria-current='page'] {
+    opacity: 0.85;
+  }
+</style>

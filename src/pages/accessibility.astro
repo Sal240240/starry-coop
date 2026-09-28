@@ -1,0 +1,153 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PlainHero from '../components/PlainHero.astro';
+import Photo from '../components/Photo.astro';
+import { PAGES } from '../data/pages';
+import { SITE, telHref } from '../data/site';
+
+const page = PAGES.accessibility;
+const crumbs = [{ name: 'Accessibility', path: page.path }];
+---
+<BaseLayout title={page.title} description={page.description} ogPhoto={page.ogPhoto} crumbs={crumbs} headerTone="solid">
+  <PlainHero
+    eyebrow={{ zh: '无障碍', en: 'Visiting & this website' }}
+    title={page.h1}
+    lede="We want every guest to have a good visit. Here’s what to expect, and how to reach us if you need anything."
+    crumbs={crumbs}
+    art="plate"
+  />
+
+  <section class="section" aria-labelledby="entrance-title">
+    <div class="wrap split">
+      <div class="prose">
+        <h2 id="entrance-title">Getting to our dining room</h2>
+        <p>
+          Our restaurant is on the <strong>second floor</strong> at {SITE.address.street}. You enter by the street
+          door on Marine Drive, then go up one flight of stairs.
+        </p>
+        <svg class="stairs-diagram" viewBox="0 0 320 150" role="img" aria-label="Diagram: street door at ground level, then one flight of stairs up to the second-floor dining room.">
+          <path class="ground" d="M10 130 H310" />
+          <rect class="door" x="24" y="70" width="36" height="60" rx="2" />
+          <path class="stairs" d="M80 130 H110 V112 H140 V94 H170 V76 H200 V58 H230 V40 H300" />
+          <text x="18" y="146" class="lbl">Street door</text>
+          <text x="118" y="146" class="lbl">One flight of stairs</text>
+          <text x="232" y="30" class="lbl">Dining room (2nd floor)</text>
+        </svg>
+        <p>
+          If you have questions about access, or would like us to prepare anything before you arrive, please call us at
+          <a href={telHref}>{SITE.phone.display}</a> before your visit. We’re happy to help.
+        </p>
+      </div>
+      <figure class="frame ratio-3-4 entrance-photo">
+        <Photo photo="storefront-street" focus="50-35" sizes="(min-width: 56.25em) 400px, 100vw" maxWidth={540} />
+        <figcaption>Our street entrance on Marine Drive</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section class="section band" aria-labelledby="site-title">
+    <div class="wrap wrap--narrow prose">
+      <svg class="site-icon" viewBox="0 0 120 80" aria-hidden="true">
+        <rect x="4" y="6" width="112" height="70" rx="6" class="site-icon__frame" />
+        <path d="M4 20h112" class="site-icon__frame" />
+        <circle cx="14" cy="13" r="2.5" class="site-icon__dot" /><circle cx="22" cy="13" r="2.5" class="site-icon__dot" />
+        <rect x="18" y="32" width="46" height="8" rx="2" class="site-icon__bar" /><rect x="18" y="46" width="32" height="6" rx="2" class="site-icon__line" />
+        <path d="M78 46l8 8 16-18" class="site-icon__check" />
+      </svg>
+      <h2 id="site-title">This website</h2>
+      <p>
+        We aim to meet the <strong>Web Content Accessibility Guidelines (WCAG) 2.2, Level AA</strong>.
+        That includes:
+      </p>
+      <ul>
+        <li>Text and controls with strong colour contrast.</li>
+        <li>Full keyboard navigation with visible focus, and a “skip to content” link.</li>
+        <li>Descriptive text for every photo, and text alternatives for our diagrams and map.</li>
+        <li>Pages that reflow on small screens and respect your “reduce motion” setting.</li>
+        <li>Chinese text marked up so screen readers pronounce it correctly.</li>
+      </ul>
+      <p>
+        The optional interactive map is provided by Google and may not meet the same standard; our address and
+        written directions are always available on the <a href="/contact/">Visit page</a>.
+      </p>
+      <p>
+        If anything on this site is hard to use, please tell us by calling <a href={telHref}>{SITE.phone.display}</a>
+        and we’ll fix it.
+      </p>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .stairs-diagram {
+    width: 100%;
+    max-width: 420px;
+    margin-block: 1.5rem;
+  }
+
+  .stairs-diagram .ground {
+    stroke: var(--line);
+    stroke-width: 2;
+  }
+
+  .stairs-diagram .door {
+    fill: var(--blush);
+    stroke: var(--cinnabar);
+    stroke-width: 2;
+  }
+
+  .stairs-diagram .stairs {
+    fill: none;
+    stroke: var(--espresso);
+    stroke-width: 3;
+    stroke-linejoin: round;
+  }
+
+  .stairs-diagram .lbl {
+    font: 500 11px var(--font-body);
+    fill: var(--tea);
+  }
+
+  .site-icon {
+    width: 120px;
+    height: 80px;
+  }
+
+  .site-icon__frame,
+  .site-icon__line {
+    fill: none;
+    stroke: var(--espresso);
+    stroke-width: 2;
+  }
+
+  .site-icon__bar {
+    fill: var(--blush);
+  }
+
+  .site-icon__dot {
+    fill: var(--cinnabar);
+  }
+
+  .site-icon__check {
+    fill: none;
+    stroke: var(--jade);
+    stroke-width: 5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .entrance-photo {
+    box-shadow: 0 0 0 1px var(--rule);
+  }
+
+  .entrance-photo figcaption {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    padding: 1.4rem 0.9rem 0.7rem;
+    font-size: 0.82rem;
+    color: var(--parch-text);
+    background: linear-gradient(0deg, rgb(33 22 17 / 0.8), rgb(33 22 17 / 0));
+  }
+</style>

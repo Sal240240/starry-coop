@@ -1,0 +1,174 @@
+---
+/**
+ * Homepage reservation band. With online requests enabled it's a no-JS GET
+ * form that prefills /booking/; otherwise it's the phone-first panel.
+ */
+import Eyebrow from '../Eyebrow.astro';
+import Icon from '../Icon.astro';
+import PhoneFirst from '../PhoneFirst.astro';
+import Photo from '../Photo.astro';
+import { BOOKING_LIMITS } from '../../lib/booking';
+import { ONLINE_BOOKING } from '../../lib/booking-endpoint';
+
+const parties = Array.from({ length: 8 }, (_, i) => i + 1);
+---
+<section class="section" id="reserve" aria-labelledby="reserve-title">
+  <div class="wrap">
+    <div class="reserve reveal">
+      <figure class="reserve__photo">
+        <Photo photo="storefront-sign" focus="50-35" sizes="(min-width: 56.25em) 460px, 100vw" maxWidth={620} />
+        <figcaption>
+          “Great food, friendly service, good portions, and a welcoming atmosphere.”
+          <span>Google review</span>
+        </figcaption>
+      </figure>
+      <div class="reserve__card">
+        <span class="seal reserve__seal" lang="zh-Hans" aria-hidden="true">预订</span>
+        <Eyebrow zh="预订" en="Reserve" />
+        <h2 class="h2" id="reserve-title">Save a table upstairs.</h2>
+        {ONLINE_BOOKING ? (
+          <>
+            <p class="reserve__text">Send a request in under a minute and we’ll call you to confirm. Same-day or in a hurry? Just call us.</p>
+            <form class="mini" action="/booking/" method="get">
+              <div class="mini__field">
+                <label for="mini-party">Guests</label>
+                <select id="mini-party" name="party">
+                  {parties.map((n) => <option value={n} selected={n === 2}>{n} {n === 1 ? 'guest' : 'guests'}</option>)}
+                  <option value="9">9+ guests</option>
+                </select>
+              </div>
+              <div class="mini__field">
+                <label for="mini-date">Date</label>
+                <input id="mini-date" name="date" type="date" />
+              </div>
+              <button class="btn btn-seal" type="submit">Continue <Icon name="arrow" /></button>
+            </form>
+            <p class="fine">Online requests are for up to {BOOKING_LIMITS.maxParty} guests.</p>
+          </>
+        ) : (
+          <>
+            <p class="reserve__text">The quickest way to book is a quick phone call. Tell us when you’re coming and how many, and we’ll have your table ready.</p>
+            <PhoneFirst compact />
+            <a class="btn btn-seal reserve__cta" href="/booking/">Reservation details <Icon name="arrow" /></a>
+          </>
+        )}
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .reserve {
+    display: grid;
+    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+    background: var(--rice);
+    box-shadow: 0 0 0 1px var(--rule);
+  }
+
+  .reserve__photo {
+    position: relative;
+    min-height: 100%;
+    overflow: hidden;
+  }
+
+  .reserve__photo :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .reserve__photo figcaption {
+    position: absolute;
+    left: 1rem;
+    right: 1rem;
+    bottom: 1rem;
+    padding: 0.9rem 1rem;
+    background: rgb(33 22 17 / 0.76);
+    color: var(--parch-text);
+    font: italic 400 1rem / 1.45 var(--font-display);
+  }
+
+  .reserve__photo figcaption span {
+    display: block;
+    margin-top: 0.35rem;
+    font: 400 0.78rem var(--font-body);
+    color: var(--dim-on-night);
+  }
+
+  .reserve__card {
+    position: relative;
+    padding: clamp(1.75rem, 4vw, 3.5rem);
+  }
+
+  .reserve__seal {
+    position: absolute;
+    top: clamp(1.5rem, 3vw, 2.5rem);
+    right: clamp(1.5rem, 3vw, 2.5rem);
+  }
+
+  .reserve__text {
+    margin-top: 0.9rem;
+    color: var(--tea);
+    max-width: 48ch;
+  }
+
+  .mini {
+    display: grid;
+    grid-template-columns: 1fr 1fr auto;
+    align-items: end;
+    gap: 1rem;
+    margin: 1.8rem 0 0.9rem;
+  }
+
+  .mini__field {
+    display: grid;
+    gap: 0.45rem;
+  }
+
+  .mini label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--tea);
+  }
+
+  .mini input,
+  .mini select {
+    width: 100%;
+    min-height: 48px;
+    padding: 0 0.9rem;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--rice);
+    font: 500 1rem var(--font-body);
+    color: var(--ink);
+  }
+
+  .reserve__card :global(.phone-first) {
+    margin-top: 1.6rem;
+  }
+
+  .reserve__cta {
+    margin-top: 1.4rem;
+  }
+
+  @media (max-width: 56.24em) {
+    .reserve {
+      grid-template-columns: 1fr;
+    }
+    .reserve__photo {
+      aspect-ratio: 16 / 11;
+      min-height: 0;
+    }
+  }
+
+  @media (max-width: 40em) {
+    .mini {
+      grid-template-columns: 1fr;
+    }
+    .reserve__seal {
+      display: none;
+    }
+  }
+</style>

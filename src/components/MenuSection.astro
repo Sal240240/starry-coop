@@ -1,0 +1,167 @@
+---
+/**
+ * One menu category: heading (EN + 中文), blurb, items, and a visual
+ * (a photo, a diagram passed via the `visual` slot, or line art).
+ */
+import Bilingual from './Bilingual.astro';
+import LineArt, { type LineArtName } from './LineArt.astro';
+import MenuItemRow from './MenuItemRow.astro';
+import Photo, { type Focus } from './Photo.astro';
+import type { MenuCategory } from '../data/menu';
+import type { PhotoKey } from '../data/photos';
+
+interface Props {
+  category: MenuCategory;
+  photos?: { key: PhotoKey; focus?: Focus; caption?: string }[];
+  art?: LineArtName;
+  link?: { href: string; label: string };
+}
+
+const { category, photos = [], art, link } = Astro.props;
+const hasVisualSlot = Astro.slots.has('visual');
+const twoCol = category.items.length > 6;
+---
+<section class="menu-section" id={category.id} aria-labelledby={`${category.id}-title`}>
+  <header class="menu-section__head">
+    <div>
+      <h2 class="menu-section__title" id={`${category.id}-title`}>
+        {category.name} <span class="menu-section__zh" lang="zh-Hans">{category.zh}</span>
+      </h2>
+      <p class="menu-section__blurb">{category.blurb}</p>
+      {category.note && <p class="menu-section__note fine"><Bilingual text={category.note} /></p>}
+      {link && <a class="link-arrow menu-section__link" href={link.href}>{link.label} <svg aria-hidden="true"><use href="#i-arrow" /></svg></a>}
+    </div>
+    <div class="menu-section__visual">
+      {hasVisualSlot ? (
+        <slot name="visual" />
+      ) : photos.length > 0 ? (
+        <div class:list={['menu-section__photos', { 'menu-section__photos--pair': photos.length > 1 }]}>
+          {photos.map((p) => (
+            <figure class="frame">
+              <Photo photo={p.key} focus={p.focus} sizes="(min-width: 64em) 220px, 45vw" maxWidth={300} />
+              {p.caption && <figcaption class="menu-section__caption">{p.caption}</figcaption>}
+            </figure>
+          ))}
+        </div>
+      ) : (
+        art && <LineArt name={art} class="menu-section__art" />
+      )}
+    </div>
+  </header>
+  <ul class:list={['menu-section__items', { 'menu-section__items--two': twoCol }]}>
+    {category.items.map((item) => <MenuItemRow item={item} />)}
+  </ul>
+  <slot />
+</section>
+
+<style>
+  .menu-section {
+    padding-block: clamp(2.5rem, 4vw, 3.5rem);
+    border-top: 1px solid var(--rule);
+    scroll-margin-top: calc(var(--header-h) + 64px);
+  }
+
+  .menu-section__head {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 1.5rem 3rem;
+    align-items: start;
+    margin-bottom: 1.5rem;
+  }
+
+  .menu-section__title {
+    font-size: var(--step-3);
+  }
+
+  .menu-section__zh {
+    display: inline-block;
+    margin-left: 0.4rem;
+    font-size: 0.55em;
+    font-weight: 600;
+    color: var(--tea);
+    letter-spacing: 0.12em;
+    vertical-align: 0.25em;
+  }
+
+  .menu-section__blurb {
+    margin-top: 0.8rem;
+    color: var(--tea);
+    max-width: 58ch;
+  }
+
+  .menu-section__note {
+    margin-top: 0.6rem;
+    max-width: 62ch;
+  }
+
+  .menu-section__link {
+    margin-top: 0.9rem;
+  }
+
+  .menu-section__photos {
+    display: grid;
+    gap: 0.6rem;
+    width: 200px;
+  }
+
+  .menu-section__photos--pair {
+    grid-template-columns: 1fr 1fr;
+    width: 320px;
+  }
+
+  .menu-section__photos .frame {
+    aspect-ratio: 4 / 5;
+    box-shadow: 0 0 0 1px var(--rule);
+  }
+
+  .menu-section__caption {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    padding: 1.2rem 0.5rem 0.4rem;
+    font-size: 0.74rem;
+    color: var(--parch-text);
+    background: linear-gradient(0deg, rgb(33 22 17 / 0.8), rgb(33 22 17 / 0));
+  }
+
+  .menu-section__visual :global(.menu-section__art) {
+    width: 104px;
+    height: 104px;
+  }
+
+  .menu-section__items--two {
+    columns: 2;
+    column-gap: 3rem;
+  }
+
+  .menu-section__items :global(.mrow) {
+    break-inside: avoid;
+  }
+
+  @media (max-width: 56.24em) {
+    .menu-section__items--two {
+      columns: 1;
+    }
+  }
+
+  @media (max-width: 40em) {
+    .menu-section__head {
+      grid-template-columns: 1fr;
+    }
+    .menu-section__visual {
+      order: -1;
+    }
+    .menu-section__photos,
+    .menu-section__photos--pair {
+      width: 100%;
+    }
+    .menu-section__photos .frame {
+      aspect-ratio: 16 / 10;
+    }
+    .menu-section__visual :global(.menu-section__art) {
+      width: 72px;
+      height: 72px;
+    }
+  }
+</style>

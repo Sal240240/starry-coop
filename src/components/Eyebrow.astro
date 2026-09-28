@@ -1,0 +1,14 @@
+---
+/** Bilingual section label: 中文 (display serif) + small-caps English. */
+interface Props {
+  zh?: string;
+  en: string;
+  class?: string;
+}
+
+const { zh, en, class: className } = Astro.props;
+---
+<p class:list={['eyebrow', className]}>
+  {zh && <span class="zh" lang="zh-Hans" aria-hidden="true">{zh}</span>}
+  <span class="en">{en}</span>
+</p>

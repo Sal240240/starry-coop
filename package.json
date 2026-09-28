@@ -1,0 +1,36 @@
+{
+  "name": "starry-coop-website",
+  "type": "module",
+  "version": "0.0.1",
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build && node scripts/verify-dist.mjs",
+    "preview": "astro preview",
+    "check": "astro check",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "verify": "npm run test && npm run check && npm run build",
+    "astro": "astro",
+    "fonts:cjk": "node scripts/build-cjk-font.mjs",
+    "verify:dist": "node scripts/verify-dist.mjs"
+  },
+  "dependencies": {
+    "@astrojs/sitemap": "^3.7.4",
+    "astro": "^7.3.5",
+    "sharp": "^0.35.5"
+  },
+  "allowScripts": {
+    "esbuild": true
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.10",
+    "node-html-parser": "^9.0.4",
+    "typescript": "^6.0.3",
+    "vitest": "^5.0.2"
+  },
+  "description": "Starry Coop 星月小馆 — restaurant website (Astro static, AWS Amplify Hosting)",
+  "private": true
+}

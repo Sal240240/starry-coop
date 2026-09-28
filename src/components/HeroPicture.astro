@@ -1,0 +1,61 @@
+---
+/**
+ * Art-directed full-bleed hero image (the LCP element).
+ * ≥ 48em: the landscape crop (`wide`), so desktops never download a tall
+ * portrait photo to show a strip of it. Phones: the portrait original.
+ * AVIF → WebP → JPEG, eager + high priority. Restricted photos are rejected.
+ */
+import { getImage } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+import { PHOTOS, type PhotoKey } from '../data/photos';
+import type { Focus } from './Photo.astro';
+
+interface Props {
+  photo: PhotoKey;
+  focus?: Focus;
+  class?: string;
+}
+
+const { photo: key, focus = '50-50', class: className } = Astro.props;
+const entry = PHOTOS[key];
+
+if ('restricted' in entry && entry.restricted) {
+  throw new Error(`Photo "${key}" is restricted and cannot be used as a hero image.`);
+}
+
+const wide: ImageMetadata = 'wide' in entry && entry.wide ? entry.wide : entry.src;
+const tall: ImageMetadata = entry.src;
+
+const WIDE_WIDTHS = [960, 1280, 1600, 1800];
+const TALL_WIDTHS = [480, 720, 960, 1200];
+
+async function srcset(src: ImageMetadata, widths: number[], format: 'avif' | 'webp'): Promise<string> {
+  const usable = widths.filter((w) => w <= src.width);
+  const images = await Promise.all(usable.map((width) => getImage({ src, width, format, quality: 'mid' })));
+  return images.map((img, i) => `${img.src} ${usable[i]}w`).join(', ');
+}
+
+const [wideAvif, wideWebp, tallAvif, tallWebp] = await Promise.all([
+  srcset(wide, WIDE_WIDTHS, 'avif'),
+  srcset(wide, WIDE_WIDTHS, 'webp'),
+  srcset(tall, TALL_WIDTHS, 'avif'),
+  srcset(tall, TALL_WIDTHS, 'webp'),
+]);
+const fallback = await getImage({ src: wide, width: Math.min(1280, wide.width), format: 'jpg', quality: 'mid' });
+---
+<picture>
+  <source media="(min-width: 48em)" type="image/avif" srcset={wideAvif} sizes="100vw" />
+  <source media="(min-width: 48em)" type="image/webp" srcset={wideWebp} sizes="100vw" />
+  <source type="image/avif" srcset={tallAvif} sizes="100vw" />
+  <source type="image/webp" srcset={tallWebp} sizes="100vw" />
+  <img
+    src={fallback.src}
+    width={fallback.attributes.width ?? Math.min(1280, wide.width)}
+    height={fallback.attributes.height ?? Math.round((Math.min(1280, wide.width) / wide.width) * wide.height)}
+    alt={entry.alt}
+    class:list={[className, `focus-${focus}`]}
+    loading="eager"
+    decoding="sync"
+    fetchpriority="high"
+  />
+</picture>

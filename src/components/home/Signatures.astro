@@ -1,0 +1,266 @@
+---
+import Eyebrow from '../Eyebrow.astro';
+import Icon from '../Icon.astro';
+import MenuItemRow from '../MenuItemRow.astro';
+import Photo from '../Photo.astro';
+import { displayPrice, findItem, menuCategory } from '../../data/menu';
+
+const porkRice = findItem('Taiwanese Braised Pork Rice');
+const lamb = findItem('Signature Lamb Skewer');
+const beef = findItem('Angus Beef Skewer');
+const sheet = menuCategory('noodles-rice').items.filter((i) => i.name !== 'Taiwanese Braised Pork Rice').slice(0, 6);
+---
+<section class="section signatures" id="signatures" aria-labelledby="sig-title">
+  <div class="wrap">
+    <header class="section-head reveal">
+      <div>
+        <Eyebrow zh="招牌" en="From the owner-chef" />
+        <h2 class="h2" id="sig-title">The dishes guests come back for.</h2>
+      </div>
+      <a class="link-arrow" href="/menu/" data-astro-prefetch>Full menu &amp; prices <Icon name="arrow" /></a>
+    </header>
+
+    <div class="sig-grid">
+      <figure class="dish dish--tall reveal">
+        <div class="dish__media">
+          <Photo photo="braised-pork-rice" focus="50-65" sizes="(min-width: 64em) 420px, (min-width: 40em) 100vw, 100vw" maxWidth={640} />
+          <span class="tag">Popular</span>
+        </div>
+        <figcaption>
+          <span class="dish__name">{porkRice.name}</span>
+          <span class="dish__price">{displayPrice(porkRice)}</span>
+          <span class="dish__zh" lang="zh-Hans">{porkRice.zh}</span>
+        </figcaption>
+      </figure>
+
+      <figure class="dish reveal">
+        <div class="dish__media">
+          <Photo photo="lamb-skewers" focus="50-50" sizes="(min-width: 64em) 360px, (min-width: 40em) 50vw, 100vw" maxWidth={560} />
+          <span class="tag">Signature</span>
+        </div>
+        <figcaption>
+          <span class="dish__name">{lamb.name}</span>
+          <span class="dish__price">{displayPrice(lamb)}</span>
+          <span class="dish__zh" lang="zh-Hans">{lamb.zh}</span>
+          <span class="dish__note">each</span>
+        </figcaption>
+      </figure>
+
+      <figure class="dish reveal">
+        <div class="dish__media">
+          <Photo photo="pork-belly-beef-skewers" focus="50-50" sizes="(min-width: 64em) 360px, (min-width: 40em) 50vw, 100vw" maxWidth={560} />
+        </div>
+        <figcaption>
+          <span class="dish__name">Angus Beef &amp; Honey Pork Belly</span>
+          <span class="dish__price">{displayPrice(beef)}</span>
+          <span class="dish__zh" lang="zh-Hans">{beef.zh} · 蜜汁五花肉</span>
+          <span class="dish__note">each</span>
+        </figcaption>
+      </figure>
+
+      <article class="sheet reveal" aria-labelledby="sheet-title">
+        <p class="sheet__kicker">Chef’s special</p>
+        <h3 class="sheet__title" id="sheet-title">Handmade Noodles &amp; Rice <span lang="zh-Hans">面 · 饭</span></h3>
+        <ul>
+          {sheet.map((item) => <MenuItemRow item={item} showDescription={false} />)}
+        </ul>
+        <p class="fine sheet__fine">Dine-in prices, subject to change. Also on the menu: sharing hot pots, Peking duck, wok dishes, fried chicken and bubble tea.</p>
+        <a class="link-arrow" href="/menu/#noodles-rice">See the full menu <Icon name="arrow" /></a>
+      </article>
+    </div>
+  </div>
+</section>
+
+<style>
+  .section-head {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: end;
+    gap: 1.5rem 3rem;
+    margin-bottom: clamp(2rem, 4vw, 3.25rem);
+  }
+
+  .sig-grid {
+    display: grid;
+    grid-template-columns: 1.12fr 1fr 1fr;
+    grid-template-rows: auto auto;
+    gap: clamp(1rem, 2vw, 1.75rem);
+  }
+
+  .dish {
+    display: flex;
+    flex-direction: column;
+    background: var(--rice);
+    box-shadow: 0 0 0 1px var(--rule);
+  }
+
+  .dish__media {
+    position: relative;
+    overflow: hidden;
+    background: var(--paper-2);
+  }
+
+  .dish__media :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.6s var(--ease);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .dish:hover .dish__media :global(img) {
+      transform: scale(1.03);
+    }
+  }
+
+  .dish--tall {
+    grid-row: 1 / span 2;
+  }
+
+  .dish--tall .dish__media {
+    flex: 1;
+    min-height: 420px;
+  }
+
+  .dish:not(.dish--tall) .dish__media {
+    aspect-ratio: 4 / 3;
+  }
+
+  .dish figcaption {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 0.15rem 1rem;
+    padding: 1.05rem 1.2rem 1.2rem;
+    align-items: baseline;
+  }
+
+  .dish__name {
+    font: 500 var(--step-1) / 1.2 var(--font-display);
+    color: var(--espresso);
+  }
+
+  .dish__zh {
+    grid-column: 1;
+    font-size: 0.95rem;
+    color: var(--tea);
+  }
+
+  .dish__price {
+    grid-column: 2;
+    grid-row: 1;
+    font: 500 1.15rem var(--font-display);
+    font-variant-numeric: lining-nums tabular-nums;
+    color: var(--cinnabar-deep);
+  }
+
+  .dish__note {
+    grid-column: 2;
+    grid-row: 2;
+    font-size: 0.8rem;
+    color: var(--tea);
+    text-align: right;
+  }
+
+  .tag {
+    position: absolute;
+    left: 0.9rem;
+    top: 0.9rem;
+    padding: 0.35rem 0.6rem;
+    background: var(--rice);
+    color: var(--cinnabar-deep);
+    font-size: 0.74rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    border-radius: var(--radius);
+  }
+
+  .sheet {
+    grid-column: 3;
+    grid-row: 1 / span 2;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    padding: clamp(1.5rem, 2.4vw, 2.2rem);
+    background: var(--rice);
+    box-shadow: 0 0 0 1px var(--rule);
+  }
+
+  .sheet::before {
+    content: '';
+    position: absolute;
+    inset: 7px;
+    border: 1px solid var(--rule);
+    pointer-events: none;
+  }
+
+  .sheet__kicker {
+    margin-bottom: 0.6rem;
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--tea);
+  }
+
+  .sheet__title {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+    font-size: var(--step-2);
+    padding-bottom: 0.9rem;
+    margin-bottom: 0.6rem;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .sheet__title [lang='zh-Hans'] {
+    white-space: nowrap;
+    font-size: 1rem;
+    color: var(--tea);
+    letter-spacing: 0.2em;
+  }
+
+  .sheet__fine {
+    margin-top: auto;
+    padding-top: 1.1rem;
+  }
+
+  .sheet .link-arrow {
+    margin-top: 0.8rem;
+  }
+
+  @media (max-width: 63.99em) {
+    .sig-grid {
+      grid-template-columns: 1fr 1fr;
+    }
+    .dish--tall {
+      grid-row: auto;
+      grid-column: 1 / -1;
+    }
+    .dish--tall .dish__media {
+      min-height: 0;
+      aspect-ratio: 16 / 10;
+      flex: none;
+    }
+    .sheet {
+      grid-column: 1 / -1;
+      grid-row: auto;
+    }
+  }
+
+  @media (max-width: 47.99em) {
+    .section-head {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 29.99em) {
+    .sig-grid {
+      grid-template-columns: 1fr;
+    }
+    .dish figcaption {
+      padding: 0.85rem 0.95rem 1rem;
+    }
+  }
+</style>

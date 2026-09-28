@@ -1,0 +1,76 @@
+---
+/**
+ * Illustrated map + actions. The interactive Google map only loads when the
+ * visitor asks for it (click-to-load facade): no third-party requests by default.
+ */
+import AmblesideMap from './AmblesideMap.astro';
+import Icon from './Icon.astro';
+import { SITE, fullAddress } from '../data/site';
+
+interface Props {
+  id?: string;
+  interactive?: boolean;
+}
+
+const { id = 'map', interactive = false } = Astro.props;
+const embedSrc = `https://www.google.com/maps?q=${encodeURIComponent(`Starry Coop, ${fullAddress}`)}&output=embed`;
+---
+<div class="map-card" data-map-card>
+  <div class="map-frame" data-map-facade={interactive ? '' : undefined} data-map-src={embedSrc} data-map-title="Google map of Starry Coop, 1373 Marine Drive, West Vancouver">
+    <AmblesideMap id={id} />
+  </div>
+  <div class="map-actions">
+    <a class="btn btn-seal" href={SITE.links.directions} target="_blank" rel="noopener">
+      <Icon name="pin" />Get directions<span class="sr-only"> (opens Google Maps in a new tab)</span>
+    </a>
+    {interactive && (
+      <button class="btn btn-ghost" type="button" data-map-load>Load interactive map</button>
+    )}
+    <a class="text-link" href={SITE.links.googleMaps} target="_blank" rel="noopener">
+      Open in Google Maps<span class="sr-only"> (opens in a new tab)</span>
+    </a>
+  </div>
+  {interactive && <p class="fine map-note">The interactive map is provided by Google and loads only when you choose it.</p>}
+</div>
+
+{interactive && (
+  <script>
+    import '../scripts/map-facade';
+  </script>
+)}
+
+<style>
+  .map-card {
+    background: var(--paper-2);
+    box-shadow: 0 0 0 1px var(--rule);
+    padding: clamp(0.6rem, 1vw, 0.9rem);
+  }
+
+  .map-frame {
+    position: relative;
+  }
+
+  .map-frame :global(.map-facade__frame) {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+  }
+
+  .map-frame[data-state='loaded'] :global(.map) {
+    visibility: hidden;
+  }
+
+  .map-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem 1.1rem;
+    padding: 1rem 0.3rem 0.3rem;
+  }
+
+  .map-note {
+    padding: 0.5rem 0.3rem 0.2rem;
+  }
+</style>

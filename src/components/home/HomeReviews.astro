@@ -1,0 +1,63 @@
+---
+import Eyebrow from '../Eyebrow.astro';
+import RatingSummary from '../RatingSummary.astro';
+import ReviewCard from '../ReviewCard.astro';
+
+const featured = ['ambleside-walk', 'zh-family', 'value-portions'];
+---
+<section class="section band" id="reviews" aria-labelledby="reviews-title">
+  <div class="wrap">
+    <div class="reviews__head reveal">
+      <div>
+        <Eyebrow zh="食评" en="What guests say" />
+        <h2 class="h2" id="reviews-title">A hidden gem, in our guests’ words.</h2>
+      </div>
+      <RatingSummary />
+    </div>
+    <ul class="reviews__list" aria-label="Featured Google reviews">
+      {featured.map((id) => (
+        <li class="reveal"><ReviewCard id={id} /></li>
+      ))}
+    </ul>
+  </div>
+</section>
+
+<style>
+  .reviews__head {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 2rem clamp(2rem, 5vw, 5rem);
+    align-items: end;
+    margin-bottom: clamp(2.5rem, 4vw, 3.5rem);
+    padding-bottom: clamp(2rem, 4vw, 3rem);
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .reviews__list {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: clamp(1.5rem, 2vw, 1.75rem);
+  }
+
+  @media (max-width: 56.24em) {
+    .reviews__head {
+      grid-template-columns: 1fr;
+    }
+
+    .reviews__list {
+      grid-template-columns: none;
+      grid-auto-flow: column;
+      grid-auto-columns: min(84%, 380px);
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      padding: 18px var(--gutter) 1rem;
+      margin-inline: calc(var(--gutter) * -1);
+      scroll-padding-inline: var(--gutter);
+      scrollbar-width: thin;
+    }
+
+    .reviews__list li {
+      scroll-snap-align: start;
+    }
+  }
+</style>

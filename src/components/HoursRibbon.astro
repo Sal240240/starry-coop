@@ -1,0 +1,140 @@
+---
+/**
+ * Weekly opening-hours chart (SVG), generated from SITE.hours at build time.
+ * scripts/hours-ribbon.ts highlights today and draws a "now" marker.
+ * A text equivalent is always present for screen readers and no-JS.
+ */
+import { SITE, formatTime, type DayKey } from '../data/site';
+
+const DAYS: { key: DayKey; label: string }[] = [
+  { key: 'Mo', label: 'Mon' },
+  { key: 'Tu', label: 'Tue' },
+  { key: 'We', label: 'Wed' },
+  { key: 'Th', label: 'Thu' },
+  { key: 'Fr', label: 'Fri' },
+  { key: 'Sa', label: 'Sat' },
+  { key: 'Su', label: 'Sun' },
+];
+
+// Axis: 10 a.m. → 10 p.m.
+const AXIS_START = 10 * 60;
+const AXIS_END = 22 * 60;
+const X0 = 48;
+const X1 = 452;
+const ROW_H = 26;
+const TOP = 26;
+
+const toMin = (t: string): number => {
+  const [h, m] = t.split(':').map(Number);
+  return h * 60 + m;
+};
+const x = (min: number): number => X0 + ((min - AXIS_START) / (AXIS_END - AXIS_START)) * (X1 - X0);
+
+const rows = DAYS.map((d, i) => {
+  const h = SITE.hours.find((row) => (row.days as readonly DayKey[]).includes(d.key));
+  return {
+    ...d,
+    y: TOP + i * ROW_H,
+    x1: h ? x(toMin(h.opens)) : 0,
+    x2: h ? x(toMin(h.closes)) : 0,
+  };
+});
+const ticks = [10, 13, 16, 19, 22].map((h) => ({ x: x(h * 60), label: `${h > 12 ? h - 12 : h}${h >= 12 ? 'p' : 'a'}` }));
+const height = TOP + DAYS.length * ROW_H + 8;
+const summary = SITE.hours.map((h) => `${h.label}: ${formatTime(h.opens)} to ${formatTime(h.closes)}`).join('; ');
+---
+<figure class="hours">
+  <svg
+    viewBox={`0 0 460 ${height}`}
+    role="img"
+    aria-label={`Opening hours. ${summary}`}
+    data-hours-ribbon
+    data-axis-start={AXIS_START}
+    data-axis-end={AXIS_END}
+    data-x0={X0}
+    data-x1={X1}
+  >
+    <g class="ticks" aria-hidden="true">
+      {ticks.map((t) => (
+        <>
+          <line x1={t.x} x2={t.x} y1={TOP - 8} y2={height - 6} class="grid" />
+          <text x={t.x} y="12" text-anchor="middle" class="tick">{t.label}</text>
+        </>
+      ))}
+    </g>
+    {rows.map((r) => (
+      <g class="row" data-day={r.key} aria-hidden="true">
+        <text x="0" y={r.y + 13} class="day">{r.label}</text>
+        <rect x={X0} y={r.y + 3} width={X1 - X0} height="14" rx="2" class="track" />
+        <rect x={r.x1} y={r.y + 3} width={r.x2 - r.x1} height="14" rx="2" class="bar" />
+      </g>
+    ))}
+    <line class="now" x1="0" x2="0" y1={TOP - 6} y2={height - 6} visibility="hidden" data-now-line />
+  </svg>
+  <figcaption class="hours-text num">
+    {SITE.hours.map((h, i) => (
+      <>
+        {i > 0 && ' · '}
+        <span>{h.short} {formatTime(h.opens)}–{formatTime(h.closes)}</span>
+      </>
+    ))}
+  </figcaption>
+</figure>
+
+<script>
+  import '../scripts/hours-ribbon';
+</script>
+
+<style>
+  .hours svg {
+    width: 100%;
+    height: auto;
+    overflow: visible;
+  }
+
+  .tick {
+    font: 500 11px var(--font-body);
+    fill: var(--tea);
+  }
+
+  .grid {
+    stroke: var(--rule);
+    stroke-width: 1;
+  }
+
+  .day {
+    font: 600 12px var(--font-body);
+    fill: var(--tea);
+    letter-spacing: 0.04em;
+  }
+
+  .track {
+    fill: var(--paper-2);
+  }
+
+  .bar {
+    fill: var(--espresso);
+    opacity: 0.78;
+  }
+
+  .row:global(.is-today) .bar {
+    fill: var(--cinnabar);
+    opacity: 1;
+  }
+
+  .row:global(.is-today) .day {
+    fill: var(--cinnabar-deep);
+  }
+
+  .now {
+    stroke: var(--jade);
+    stroke-width: 2;
+    stroke-dasharray: 3 3;
+  }
+
+  .hours-text {
+    margin-top: 0.6rem;
+    font-size: 0.92rem;
+    color: var(--tea);
+  }
+</style>

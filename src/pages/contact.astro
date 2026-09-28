@@ -1,0 +1,192 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import CtaBand from '../components/CtaBand.astro';
+import Eyebrow from '../components/Eyebrow.astro';
+import HoursRibbon from '../components/HoursRibbon.astro';
+import Icon from '../components/Icon.astro';
+import MapCard from '../components/MapCard.astro';
+import OpenStatus from '../components/OpenStatus.astro';
+import PageHero from '../components/PageHero.astro';
+import Photo from '../components/Photo.astro';
+import ReviewQuote from '../components/ReviewQuote.astro';
+import { PAGES } from '../data/pages';
+import { SITE, telHref } from '../data/site';
+
+const page = PAGES.contact;
+const crumbs = [{ name: 'Visit', path: page.path }];
+---
+<BaseLayout title={page.title} description={page.description} ogPhoto={page.ogPhoto} crumbs={crumbs}>
+  <PageHero
+    photo="dining-room-sunlit"
+    focus="50-50"
+    eyebrow={{ zh: '到访', en: 'Visit & contact' }}
+    title={page.h1}
+    lede="Upstairs at 1373 Marine Drive in Ambleside, open every day from 11 a.m."
+    crumbs={crumbs}
+  >
+    <a class="btn btn-seal num" href={telHref}><Icon name="phone" />Call {SITE.phone.display}</a>
+    <a class="btn btn-ghost-light" href={SITE.links.directions} target="_blank" rel="noopener">Get directions<span class="sr-only"> (opens Google Maps in a new tab)</span></a>
+  </PageHero>
+
+  <section class="section" aria-labelledby="details-title">
+    <div class="wrap contact-grid">
+      <div class="contact-card">
+        <Eyebrow zh="联系" en="Contact details" />
+        <h2 class="h2" id="details-title">Say hello.</h2>
+        <dl class="details">
+          <div>
+            <dt><Icon name="pin" />Address</dt>
+            <dd>
+              <address>{SITE.address.street}<br />{SITE.address.city}, {SITE.address.region} {SITE.address.postalCode}</address>
+            </dd>
+          </div>
+          <div>
+            <dt><Icon name="phone" />Phone</dt>
+            <dd><a class="num" href={telHref}>{SITE.phone.display}</a><span class="fine"> · for reservations, takeout and questions</span></dd>
+          </div>
+          <div>
+            <dt><Icon name="clock" />Hours</dt>
+            <dd><OpenStatus /></dd>
+          </div>
+          <div>
+            <dt><Icon name="bag" />Takeout &amp; delivery</dt>
+            <dd>
+              Call to order for pickup, or order on
+              <a class="text-link" href={SITE.links.uberEats} target="_blank" rel="noopener">Uber Eats<span class="sr-only"> (opens in a new tab)</span></a>.
+            </dd>
+          </div>
+        </dl>
+        <div class="contact-hours"><HoursRibbon /></div>
+        <p class="fine">Hours can differ on holidays, so please call ahead.</p>
+      </div>
+      <div>
+        <MapCard id="contact-map" interactive />
+      </div>
+    </div>
+  </section>
+
+  <section class="section band" aria-labelledby="finding-title">
+    <div class="wrap split">
+      <figure class="frame ratio-3-4 street">
+        <Photo photo="storefront-street" focus="50-35" sizes="(min-width: 56.25em) 420px, 100vw" maxWidth={560} />
+        <figcaption class="street__cap">Look for the pink sign on Marine Drive</figcaption>
+      </figure>
+      <div class="prose">
+        <Eyebrow zh="怎么找到我们" en="Finding us" />
+        <h2 class="h2" id="finding-title">Upstairs, above Marine Drive.</h2>
+        <p>
+          We’re on Marine Drive between 13th and 14th Streets in Ambleside. Look for the pink
+          “Starry Coop — Skewer in Pot” sign and the paper lanterns.
+        </p>
+        <ol class="steps">
+          <li><span class="steps__n" aria-hidden="true">1</span>Find the street door under the sign on Marine Drive.</li>
+          <li><span class="steps__n" aria-hidden="true">2</span>Head up one flight of stairs to the second floor.</li>
+          <li><span class="steps__n" aria-hidden="true">3</span>Grab a table, a tray and a free coffee.</li>
+        </ol>
+        <p>
+          Questions about access? Please <a href={telHref}>call us</a> before you visit, or read our
+          <a href="/accessibility/">accessibility notes</a>.
+        </p>
+        <ReviewQuote id="ambleside-walk" />
+      </div>
+    </div>
+  </section>
+
+  <CtaBand title="See you upstairs." reviewId="welcoming" />
+</BaseLayout>
+
+<style>
+  .contact-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+    gap: clamp(2rem, 5vw, 5rem);
+    align-items: start;
+  }
+
+  .details {
+    display: grid;
+    gap: 1.2rem;
+    margin-top: 1.75rem;
+  }
+
+  .details dt {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--tea);
+  }
+
+  .details dt :global(svg) {
+    width: 16px;
+    height: 16px;
+    color: var(--cinnabar);
+  }
+
+  .details dd {
+    margin-top: 0.35rem;
+    font-size: 1.05rem;
+  }
+
+  .details dd a.num {
+    font: 500 var(--step-1) var(--font-display);
+    color: var(--espresso);
+  }
+
+  .contact-hours {
+    margin: 1.75rem 0 0.6rem;
+  }
+
+  .street {
+    box-shadow: 0 0 0 1px var(--rule);
+  }
+
+  .street__cap {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    padding: 1.4rem 0.9rem 0.7rem;
+    font-size: 0.82rem;
+    color: var(--parch-text);
+    background: linear-gradient(0deg, rgb(33 22 17 / 0.8), rgb(33 22 17 / 0));
+  }
+
+  .steps {
+    display: grid;
+    gap: 0.8rem;
+  }
+
+  .steps li {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    padding-left: 0 !important;
+  }
+
+  .steps li::before {
+    display: none;
+  }
+
+  .steps__n {
+    display: grid;
+    place-items: center;
+    flex: none;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: var(--cinnabar);
+    color: #fff;
+    font-weight: 600;
+    font-size: 0.85rem;
+  }
+
+  @media (max-width: 56.24em) {
+    .contact-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

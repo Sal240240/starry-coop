@@ -1,0 +1,20 @@
+---
+export type IconName =
+  | 'moon' | 'star' | 'phone' | 'pin' | 'arrow' | 'ext' | 'cup' | 'quote' | 'menu' | 'close'
+  | 'clock' | 'check' | 'stairs' | 'users' | 'leaf' | 'heart' | 'bag' | 'calendar' | 'copy'
+  | 'message' | 'spark';
+
+interface Props {
+  name: IconName;
+  class?: string;
+  /** Accessible label; omit for decorative icons (the default). */
+  label?: string;
+}
+
+const { name, class: className, label } = Astro.props;
+---
+{label ? (
+  <svg class={className} role="img" aria-label={label}><use href={`#i-${name}`} /></svg>
+) : (
+  <svg class={className} aria-hidden="true" focusable="false"><use href={`#i-${name}`} /></svg>
+)}

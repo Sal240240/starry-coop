@@ -1,0 +1,140 @@
+---
+import Eyebrow from '../Eyebrow.astro';
+---
+<section class="section welcome" aria-labelledby="welcome-title">
+  <div class="wrap welcome__grid">
+    <div class="welcome__intro reveal">
+      <Eyebrow zh="欢迎" en="Welcome upstairs" />
+      <h2 class="h2" id="welcome-title">Comfort food, made to order, and a little different from the usual.</h2>
+      <p>
+        Tucked away upstairs on Marine Drive, Starry Coop is a cozy, relaxed hidden kitchen. We focus on freshly
+        made-to-order food, quality ingredients and comforting flavours: handmade noodles and dumplings, skewers,
+        sharing hot pots, wok-fried dishes, Taiwanese fried chicken and handcrafted drinks.
+      </p>
+      <p class="welcome__sig">
+        <span class="seal seal--sm" lang="zh-Hans" aria-hidden="true">星月</span>
+        Friendly prices, plenty of choices. Come hungry.
+      </p>
+    </div>
+
+    <ul class="welcome__facts reveal">
+      <li>
+        <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 24h36c0 8.8-8 15-18 15S6 32.8 6 24Z"/><path d="M18 42h12"/><path class="accent" d="M29 5 21 21M35 7 26 21"/><path d="M11 24c1.6-3 3.2-3 4.8 0s3.2 3 4.8 0 3.2-3 4.8 0 3.2 3 4.8 0 3.2-3 4.8 0"/></svg>
+        <h3>Made by hand</h3>
+        <p>Noodles, dumplings and wontons made by hand in our kitchen, with sauces made in-house.</p>
+      </li>
+      <li>
+        <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M26 6h15v15L22 40 7 25 26 6Z"/><circle class="accent" cx="34" cy="13" r="2.5"/><path d="M19 22.5c1.8-1.8 5-1.2 5 1.2 0 2.6-5.6 1.4-5.6 4.2 0 2.3 3.2 2.8 5.2 1M21.3 20.3l.8.8M25.3 31.1l.8.8"/></svg>
+        <h3>Friendly prices</h3>
+        <p>Many noodle and rice bowls are under $10. Diners on Google put it at about $20–30 per person.</p>
+      </li>
+      <li>
+        <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 18h24v10a10 10 0 0 1-10 10h-4A10 10 0 0 1 8 28V18Z"/><path d="M32 21h3a4.5 4.5 0 0 1 0 9h-3.4"/><path class="accent" d="M15 7c-1.6 2 1.6 3.2 0 5.2M21 7c-1.6 2 1.6 3.2 0 5.2M27 7c-1.6 2 1.6 3.2 0 5.2"/><path d="M6 43h30"/></svg>
+        <h3>On the house</h3>
+        <p>Free coffee and ice cream, all day long, from our coffee, ice cream and dessert bar.</p>
+      </li>
+      <li>
+        <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 22l9-9 6 5 8-10 8 9 9-6"/><circle class="accent" cx="38" cy="7" r="3"/><path d="M4 32c3.3 0 3.3-2.5 6.6-2.5s3.3 2.5 6.6 2.5 3.3-2.5 6.6-2.5 3.3 2.5 6.6 2.5 3.3-2.5 6.6-2.5 3.3 2.5 5 2.5"/><path d="M4 39c3.3 0 3.3-2.5 6.6-2.5s3.3 2.5 6.6 2.5 3.3-2.5 6.6-2.5 3.3 2.5 6.6 2.5 3.3-2.5 6.6-2.5 3.3 2.5 5 2.5"/></svg>
+        <h3>By the water</h3>
+        <p>A short walk from Ambleside Beach. Stop in before or after a stroll along the waterfront.</p>
+      </li>
+    </ul>
+  </div>
+</section>
+
+<style>
+  .welcome__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+    gap: clamp(2.5rem, 6vw, 6rem);
+    align-items: start;
+  }
+
+  .welcome__intro > p {
+    margin-top: 1.25rem;
+    max-width: 48ch;
+  }
+
+  .welcome__sig {
+    display: flex;
+    align-items: center;
+    gap: 0.9rem;
+    font: italic 400 1.05rem var(--font-display);
+    color: var(--tea);
+  }
+
+  .welcome__facts {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    border-top: 1px solid var(--rule);
+  }
+
+  .welcome__facts li {
+    padding: 2rem 1.75rem 2rem 0;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .welcome__facts li:nth-child(odd) {
+    border-right: 1px solid var(--rule);
+  }
+
+  .welcome__facts li:nth-child(even) {
+    padding-left: 1.75rem;
+    padding-right: 0;
+  }
+
+  .welcome__facts svg {
+    width: 44px;
+    height: 44px;
+    color: var(--espresso);
+    margin-bottom: 1rem;
+  }
+
+  .welcome__facts svg :global(.accent) {
+    stroke: var(--cinnabar);
+  }
+
+  .welcome__facts h3 {
+    font-size: var(--step-1);
+    font-weight: 500;
+    margin-bottom: 0.4rem;
+  }
+
+  .welcome__facts p {
+    color: var(--tea);
+    font-size: 0.97rem;
+    max-width: 34ch;
+  }
+
+  @media (max-width: 56.24em) {
+    .welcome__grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 32.49em) {
+    .welcome__facts {
+      grid-template-columns: 1fr;
+    }
+
+    .welcome__facts li,
+    .welcome__facts li:nth-child(even) {
+      padding: 1.5rem 0;
+      border-right: 0;
+      display: grid;
+      grid-template-columns: 44px 1fr;
+      column-gap: 1.1rem;
+    }
+
+    .welcome__facts li:nth-child(odd) {
+      border-right: 0;
+    }
+
+    .welcome__facts svg {
+      margin: 0;
+      grid-row: span 2;
+      width: 40px;
+      height: 40px;
+    }
+  }
+</style>
