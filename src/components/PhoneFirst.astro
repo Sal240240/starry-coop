@@ -1,0 +1,100 @@
+---
+/** Phone-first reservation panel (used when online requests aren't enabled). */
+import Icon from './Icon.astro';
+import OpenStatus from './OpenStatus.astro';
+import { SITE, formatTime, telHref } from '../data/site';
+
+interface Props {
+  compact?: boolean;
+}
+
+const { compact = false } = Astro.props;
+---
+<div class:list={['phone-first', { 'phone-first--compact': compact }]}>
+  <p class="phone-first__label">Reserve by phone</p>
+  <a class="phone-first__number num" href={telHref}>
+    <Icon name="phone" />{SITE.phone.display}
+  </a>
+  <OpenStatus />
+  {!compact && (
+    <>
+      <p class="phone-first__lead">When you call, it helps to have ready:</p>
+      <ul class="phone-first__list">
+        <li><Icon name="calendar" /><span>The day and time you’d like to arrive</span></li>
+        <li><Icon name="users" /><span>How many guests, including little ones</span></li>
+        <li><Icon name="heart" /><span>Any allergies, dietary needs or a special occasion</span></li>
+      </ul>
+      <p class="fine">
+        We answer during opening hours: {SITE.hours.map((h, i) => `${i > 0 ? '; ' : ''}${h.short} ${formatTime(h.opens)}–${formatTime(h.closes)}`).join('')}
+      </p>
+    </>
+  )}
+  <a class="btn btn-seal phone-first__cta" href={telHref}><Icon name="phone" />Call to reserve</a>
+</div>
+
+<style>
+  .phone-first {
+    display: grid;
+    gap: 0.9rem;
+    justify-items: start;
+  }
+
+  .phone-first__label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--tea);
+  }
+
+  .phone-first__number {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.7rem;
+    font: 400 clamp(1.9rem, 1.4rem + 2vw, 2.8rem) / 1.1 var(--font-display);
+    color: var(--espresso);
+    text-decoration: none;
+  }
+
+  .phone-first__number :global(svg) {
+    width: 0.8em;
+    height: 0.8em;
+    color: var(--cinnabar);
+  }
+
+  .phone-first__number:hover {
+    color: var(--cinnabar-deep);
+  }
+
+  .phone-first__lead {
+    margin-top: 0.6rem;
+    font-weight: 600;
+  }
+
+  .phone-first__list {
+    display: grid;
+    gap: 0.6rem;
+  }
+
+  .phone-first__list li {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.7rem;
+  }
+
+  .phone-first__list :global(svg) {
+    flex: none;
+    width: 20px;
+    height: 20px;
+    margin-top: 0.15rem;
+    color: var(--cinnabar);
+  }
+
+  .phone-first__cta {
+    margin-top: 0.4rem;
+  }
+
+  .phone-first--compact .phone-first__cta {
+    display: none;
+  }
+</style>

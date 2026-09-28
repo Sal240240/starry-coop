@@ -1,0 +1,67 @@
+---
+/**
+ * Live "Open now · until 9 p.m." badge. The static fallback text is correct
+ * without JS; scripts/open-status.ts (loaded by BaseLayout) makes it live.
+ */
+interface Props {
+  variant?: 'chip' | 'plain';
+  class?: string;
+}
+
+const { variant = 'chip', class: className } = Astro.props;
+---
+<span class:list={['open-status', `open-status--${variant}`, className]} data-open-status data-state="unknown">
+  <span class="status-dot" aria-hidden="true"></span>
+  <span data-open-status-label>Open daily from 11 a.m.</span>
+</span>
+
+<style>
+  .open-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+    font-weight: 600;
+    font-size: 0.9rem;
+  }
+
+  .open-status--chip {
+    padding: 0.4rem 0.85rem;
+    border-radius: 999px;
+    background: var(--rice);
+    box-shadow: inset 0 0 0 1px var(--rule);
+    color: var(--jade);
+  }
+
+  .open-status--chip[data-state='closed'],
+  .open-status--chip[data-state='closing'] {
+    color: var(--cinnabar-deep);
+  }
+
+  .status-dot {
+    flex: none;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: currentColor;
+    box-shadow: 0 0 0 3px rgb(31 111 102 / 0.18);
+  }
+
+  .open-status--plain .status-dot {
+    background: #7fc0ad;
+    box-shadow: 0 0 0 3px rgb(127 192 173 / 0.25);
+  }
+
+  .open-status--plain[data-state='closed'] .status-dot {
+    background: #d9a48f;
+    box-shadow: 0 0 0 3px rgb(217 164 143 / 0.25);
+  }
+
+  .open-status--plain[data-state='closing'] .status-dot {
+    background: var(--price-on-dark);
+  }
+
+  [data-state='closed'] .status-dot,
+  [data-state='closing'] .status-dot {
+    box-shadow: 0 0 0 3px rgb(142 42 32 / 0.15);
+  }
+</style>

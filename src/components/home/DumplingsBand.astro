@@ -1,0 +1,78 @@
+---
+import DumplingDiagram from '../DumplingDiagram.astro';
+import Eyebrow from '../Eyebrow.astro';
+import Icon from '../Icon.astro';
+import Photo from '../Photo.astro';
+import ReviewQuote from '../ReviewQuote.astro';
+---
+<section class="section band" id="dumplings" aria-labelledby="dumplings-title">
+  <div class="wrap dumplings__grid">
+    <figure class="dumplings__photo reveal">
+      <div class="frame ratio-4-5">
+        <Photo photo="handmade-dumplings" focus="50-50" sizes="(min-width: 56.25em) 440px, 100vw" maxWidth={640} />
+      </div>
+      <span class="seal dumplings__seal" lang="zh-Hans" aria-hidden="true">每日</span>
+      <figcaption class="caption"><span>Handmade dumplings with chili oil and sesame</span><span lang="zh-Hans">油泼</span></figcaption>
+    </figure>
+
+    <div class="dumplings__copy reveal">
+      <Eyebrow zh="纯手工饺子" en="Made by hand, daily" />
+      <h2 class="h2" id="dumplings-title">Dumplings, folded fresh every day.</h2>
+      <p class="lede dumplings__lede">
+        Made fresh by hand every day with carefully selected ingredients and thin, delicate wrappers. Choose how
+        you’d like them cooked, then pick a filling.
+      </p>
+      <DumplingDiagram id="home-dumplings" />
+      <ReviewQuote id="authentic-dumplings" class="dumplings__quote" />
+      <a class="link-arrow dumplings__link" href="/menu/handmade-noodles-dumplings/">Handmade noodles &amp; dumplings <Icon name="arrow" /></a>
+    </div>
+  </div>
+</section>
+
+<style>
+  .dumplings__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+    gap: clamp(2.5rem, 6vw, 6rem);
+    align-items: center;
+  }
+
+  .dumplings__photo {
+    position: relative;
+  }
+
+  .dumplings__photo .frame {
+    box-shadow: 0 0 0 1px var(--rule), 0 30px 60px -40px rgb(42 28 21 / 0.45);
+  }
+
+  .dumplings__seal {
+    position: absolute;
+    right: -14px;
+    top: -14px;
+  }
+
+  .dumplings__lede {
+    margin: 1rem 0 2.25rem;
+  }
+
+  .dumplings__copy :global(.dumplings__quote) {
+    margin-top: 2rem;
+  }
+
+  .dumplings__link {
+    margin-top: 1.4rem;
+  }
+
+  @media (max-width: 56.24em) {
+    .dumplings__grid {
+      grid-template-columns: 1fr;
+    }
+    .dumplings__photo .frame {
+      aspect-ratio: 4 / 3.2;
+    }
+    .dumplings__seal {
+      right: 10px;
+      top: -18px;
+    }
+  }
+</style>

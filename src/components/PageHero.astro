@@ -1,0 +1,172 @@
+---
+/**
+ * Inner-page hero.
+ *  - `bleed`: full-bleed photo background with a scrim (use with ≥1500px-wide sources).
+ *  - `split`: parchment panel + framed photo (for lower-resolution sources).
+ * CTA buttons go in the default slot; they're marked [data-hero-ctas] so the
+ * mobile action bar stays hidden while they're on screen.
+ */
+import Bilingual from './Bilingual.astro';
+import Breadcrumbs from './Breadcrumbs.astro';
+import Eyebrow from './Eyebrow.astro';
+import HeroPicture from './HeroPicture.astro';
+import Photo, { type Focus } from './Photo.astro';
+import type { PhotoKey } from '../data/photos';
+import type { Crumb } from '../lib/schema';
+
+interface Props {
+  variant?: 'bleed' | 'split';
+  photo: PhotoKey;
+  focus?: Focus;
+  eyebrow: { en: string; zh?: string };
+  title: string;
+  lede?: string;
+  crumbs: Crumb[];
+}
+
+const { variant = 'bleed', photo, focus = '50-50', eyebrow, title, lede, crumbs } = Astro.props;
+const hasCtas = Astro.slots.has('default');
+---
+{variant === 'bleed' ? (
+  <section class="page-hero page-hero--bleed" aria-labelledby="page-title">
+    <HeroPicture photo={photo} focus={focus} class="page-hero__media" />
+    <div class="page-hero__scrim" aria-hidden="true"></div>
+    <div class="wrap page-hero__inner on-photo">
+      <Breadcrumbs crumbs={crumbs} tone="dark" />
+      <Eyebrow en={eyebrow.en} zh={eyebrow.zh} class="page-hero__eyebrow" />
+      <h1 class="h1 page-hero__title" id="page-title"><Bilingual text={title} /></h1>
+      {lede && <p class="page-hero__lede">{lede}</p>}
+      {hasCtas && <div class="btn-row page-hero__ctas" data-hero-ctas><slot /></div>}
+    </div>
+  </section>
+) : (
+  <section class="page-hero page-hero--split" aria-labelledby="page-title">
+    <div class="wrap page-hero__grid">
+      <div class="page-hero__copy">
+        <Breadcrumbs crumbs={crumbs} />
+        <Eyebrow en={eyebrow.en} zh={eyebrow.zh} class="page-hero__eyebrow" />
+        <h1 class="h1 page-hero__title" id="page-title"><Bilingual text={title} /></h1>
+        {lede && <p class="page-hero__lede lede">{lede}</p>}
+        {hasCtas && <div class="btn-row page-hero__ctas" data-hero-ctas><slot /></div>}
+      </div>
+      <figure class="page-hero__figure frame">
+        <Photo photo={photo} sizes="(min-width: 64em) 520px, 100vw" hero focus={focus} maxWidth={620} />
+      </figure>
+    </div>
+  </section>
+)}
+
+<style>
+  .page-hero--bleed {
+    position: relative;
+    isolation: isolate;
+    display: flex;
+    align-items: flex-end;
+    min-height: clamp(460px, 64svh, 660px);
+    padding-top: var(--header-h);
+    background: var(--night);
+    color: var(--parch-text);
+    overflow: hidden;
+  }
+
+  .page-hero--bleed :global(.page-hero__media) {
+    position: absolute;
+    inset: 0;
+    z-index: -2;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .page-hero__scrim {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background:
+      linear-gradient(180deg, rgb(33 22 17 / 0.82) 0%, rgb(33 22 17 / 0.4) 14%, rgb(33 22 17 / 0) 30%),
+      linear-gradient(0deg, rgb(33 22 17 / 0.9) 0%, rgb(33 22 17 / 0.55) 45%, rgb(33 22 17 / 0.15) 80%),
+      linear-gradient(90deg, rgb(33 22 17 / 0.7) 0%, rgb(33 22 17 / 0.2) 65%);
+  }
+
+  .page-hero__inner {
+    padding-block: 3rem clamp(2.5rem, 5vw, 4rem);
+  }
+
+  .on-photo :global(.eyebrow .zh) {
+    color: var(--cinnabar-on-dark);
+  }
+
+  .on-photo :global(.eyebrow .en) {
+    color: var(--parch-text);
+  }
+
+  .on-photo :global(:focus-visible) {
+    outline-color: var(--focus-dark);
+  }
+
+  .page-hero__eyebrow {
+    margin-top: 1.4rem;
+  }
+
+  .page-hero--bleed .page-hero__title {
+    color: var(--parch-text);
+    max-width: 18ch;
+  }
+
+  .page-hero--bleed .page-hero__lede {
+    margin-top: 1.1rem;
+    max-width: 52ch;
+    font: 300 var(--step-1) / 1.5 var(--font-display);
+    color: var(--parch-text);
+  }
+
+  .page-hero__ctas {
+    margin-top: 1.8rem;
+  }
+
+  .page-hero--split {
+    padding-top: calc(var(--header-h) + clamp(1.5rem, 4vw, 3rem));
+    padding-bottom: clamp(2.5rem, 5vw, 4.5rem);
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .page-hero__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+    gap: clamp(2rem, 5vw, 5rem);
+    align-items: center;
+  }
+
+  .page-hero--split .page-hero__lede {
+    margin-top: 1.1rem;
+  }
+
+  .page-hero__figure {
+    aspect-ratio: 4 / 5;
+    max-height: 560px;
+    box-shadow: 0 0 0 1px var(--rule), 0 30px 60px -40px rgb(42 28 21 / 0.45);
+  }
+
+  .page-hero__figure :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  @media (max-width: 56.24em) {
+    .page-hero__grid {
+      grid-template-columns: 1fr;
+    }
+
+    .page-hero__figure {
+      aspect-ratio: 16 / 10;
+      max-height: none;
+    }
+  }
+
+  @media (max-width: 47.99em) {
+    .page-hero--bleed {
+      min-height: clamp(420px, 70svh, 560px);
+    }
+  }
+</style>

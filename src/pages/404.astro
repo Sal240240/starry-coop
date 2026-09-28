@@ -1,0 +1,82 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Icon from '../components/Icon.astro';
+import { PAGES } from '../data/pages';
+
+const page = PAGES.notFound;
+---
+<BaseLayout title={page.title} description={page.description} ogPhoto={page.ogPhoto} headerTone="solid" noindex>
+  <section class="section not-found" aria-labelledby="page-title">
+    <div class="wrap not-found__inner">
+      <svg class="melt" viewBox="0 0 160 200" aria-hidden="true">
+        <path class="stick" d="M72 150 h16 v40 a8 8 0 0 1 -16 0 z" />
+        <path class="pop" d="M40 40 a40 40 0 0 1 80 0 v86 c0 8-6 12-10 12-4 0-6-6-10-6s-6 10-12 10-6-8-10-8-6 6-10 6-10-4-10-12V40Z" />
+        <path class="drip" d="M58 146 c0 10 -4 14 -4 20 a4 4 0 0 0 8 0 c0-6-4-10-4-20Z" />
+        <path class="shine" d="M58 44 v50" />
+      </svg>
+      <div>
+        <p class="eyebrow"><span class="zh" lang="zh-Hans" aria-hidden="true">找不到</span><span class="en">Error 404</span></p>
+        <h1 class="h1" id="page-title">{page.h1}</h1>
+        <p class="lede not-found__lede">Sorry, we couldn’t find that page. It may have moved, or it was never here.</p>
+        <div class="btn-row not-found__actions">
+          <a class="btn btn-seal" href="/menu/">See the menu <Icon name="arrow" /></a>
+          <a class="btn btn-ghost" href="/booking/">Reserve a table</a>
+          <a class="btn btn-ghost" href="/">Home</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .not-found__inner {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: clamp(2rem, 6vw, 5rem);
+    align-items: center;
+    min-height: 50vh;
+  }
+
+  .melt {
+    width: clamp(120px, 18vw, 180px);
+    height: auto;
+  }
+
+  .pop {
+    fill: var(--blush);
+    stroke: var(--cinnabar);
+    stroke-width: 3;
+  }
+
+  .drip {
+    fill: var(--cinnabar);
+    opacity: 0.8;
+  }
+
+  .stick {
+    fill: #e4d3b4;
+    stroke: var(--line);
+    stroke-width: 2;
+  }
+
+  .shine {
+    stroke: var(--rice);
+    stroke-width: 6;
+    stroke-linecap: round;
+    opacity: 0.8;
+  }
+
+  .not-found__lede {
+    margin-top: 1rem;
+  }
+
+  .not-found__actions {
+    margin-top: 1.8rem;
+  }
+
+  @media (max-width: 40em) {
+    .not-found__inner {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

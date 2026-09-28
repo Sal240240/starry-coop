@@ -1,0 +1,49 @@
+# AWS Amplify Hosting — custom response headers.
+# Amplify reads this file from the repository root on every deploy and it
+# overrides headers set in the console.
+#
+# Script/style/img/connect policy is emitted per page by Astro as a hashed
+# <meta http-equiv="Content-Security-Policy"> (see astro.config.mjs).
+# The header policy below only adds directives that a <meta> CSP cannot
+# express (frame-ancestors) plus hardening that applies to every response.
+customHeaders:
+  - pattern: '**/*'
+    headers:
+      - key: 'Strict-Transport-Security'
+        value: 'max-age=63072000; includeSubDomains'
+      - key: 'Content-Security-Policy'
+        value: "frame-ancestors 'none'; object-src 'none'; base-uri 'self'; upgrade-insecure-requests"
+      - key: 'X-Frame-Options'
+        value: 'DENY'
+      - key: 'X-Content-Type-Options'
+        value: 'nosniff'
+      - key: 'Referrer-Policy'
+        value: 'strict-origin-when-cross-origin'
+      - key: 'Permissions-Policy'
+        value: 'accelerometer=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=(), browsing-topics=()'
+      - key: 'Cross-Origin-Opener-Policy'
+        value: 'same-origin'
+      - key: 'X-Permitted-Cross-Domain-Policies'
+        value: 'none'
+
+  # Fingerprinted build assets (JS, CSS, optimised images, fonts) never change.
+  - pattern: '/_astro/**/*'
+    headers:
+      - key: 'Cache-Control'
+        value: 'public, max-age=31536000, immutable'
+
+  # Stable public files: cache for a day at the browser, a week at the edge.
+  - pattern: '/favicon.*'
+    headers:
+      - key: 'Cache-Control'
+        value: 'public, max-age=86400, s-maxage=604800'
+  - pattern: '/icons/*'
+    headers:
+      - key: 'Cache-Control'
+        value: 'public, max-age=86400, s-maxage=604800'
+
+  # HTML must revalidate so menu/price updates go live immediately.
+  - pattern: '**/*.html'
+    headers:
+      - key: 'Cache-Control'
+        value: 'public, max-age=0, s-maxage=600, must-revalidate'

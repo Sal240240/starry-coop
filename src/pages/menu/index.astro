@@ -1,0 +1,185 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import CtaBand from '../../components/CtaBand.astro';
+import Icon from '../../components/Icon.astro';
+import MenuSection from '../../components/MenuSection.astro';
+import PageHero from '../../components/PageHero.astro';
+import ReviewQuote from '../../components/ReviewQuote.astro';
+import SkewerSteps from '../../components/SkewerSteps.astro';
+import { MENU, MENU_NOTES, menuCategory } from '../../data/menu';
+import { PAGES } from '../../data/pages';
+import { SITE } from '../../data/site';
+import { menuSchema } from '../../lib/schema';
+
+const page = PAGES.menu;
+const crumbs = [{ name: 'Menu', path: page.path }];
+const origin = Astro.site!.origin;
+---
+<BaseLayout title={page.title} description={page.description} ogPhoto={page.ogPhoto} crumbs={crumbs} schema={[menuSchema(origin)]} headerTone="solid">
+  <PageHero
+    variant="split"
+    photo="braised-pork-rice"
+    focus="50-65"
+    eyebrow={{ zh: '手作 · 现做', en: 'Made by hand, cooked to order' }}
+    title={page.h1}
+    lede="Skewers in pot, handmade noodles and dumplings, BBQ skewers, sharing hot pots, wok dishes, Taiwanese fried chicken and bubble tea. Many bowls are under $10."
+    crumbs={crumbs}
+  >
+    <a class="btn btn-seal" href="/booking/">Reserve a table <Icon name="arrow" /></a>
+    <a class="btn btn-ghost" href={SITE.links.uberEats} target="_blank" rel="noopener">Order on Uber Eats<span class="sr-only"> (opens in a new tab)</span></a>
+  </PageHero>
+
+  <nav class="menu-nav" aria-label="Menu sections" data-scroll-spy>
+    <div class="wrap">
+      <ul class="menu-nav__track" data-scroll-spy-track>
+        {MENU.map((c) => (
+          <li><a href={`#${c.id}`}>{c.name}</a></li>
+        ))}
+      </ul>
+    </div>
+  </nav>
+
+  <div class="wrap menu-body">
+    <aside class="menu-notes" aria-label="About our menu">
+      <p><Icon name="spark" /> {MENU_NOTES.prices}</p>
+      <p><Icon name="leaf" /> {MENU_NOTES.dietary}</p>
+      <p class="fine">Menu updated {MENU_NOTES.updated}.</p>
+    </aside>
+
+    <MenuSection category={menuCategory('skewers-in-pot')} art="skewer" link={{ href: '/menu/skewers-in-pot/', label: 'How skewers in pot work' }}>
+      <div class="menu-extra"><SkewerSteps /></div>
+    </MenuSection>
+
+    <MenuSection category={menuCategory('noodles-rice')} art="bowl" link={{ href: '/menu/handmade-noodles-dumplings/', label: 'About our handmade noodles' }}>
+      <ReviewQuote id="value-portions" class="menu-quote" />
+    </MenuSection>
+
+    <MenuSection category={menuCategory('dumplings')} art="dumpling" link={{ href: '/menu/handmade-noodles-dumplings/', label: 'See all four cooking styles' }}>
+      <ReviewQuote id="authentic-dumplings" class="menu-quote" />
+    </MenuSection>
+
+    <MenuSection
+      category={menuCategory('bbq')}
+      photos={[
+        { key: 'skewers-gingham', focus: '50-50', caption: 'A BBQ skewer tray' },
+        { key: 'grilled-eggplant', focus: '50-50', caption: 'Grilled eggplant' },
+      ]}
+    >
+      <ReviewQuote id="couple" class="menu-quote" />
+    </MenuSection>
+
+    <MenuSection category={menuCategory('hot-pots')} art="pot" link={{ href: '/menu/hot-pots-and-groups/', label: 'Hot pots & group dining' }}>
+      <ReviewQuote id="big-plate-chicken" class="menu-quote" />
+    </MenuSection>
+
+    <MenuSection category={menuCategory('private-kitchen')} art="wok">
+      <ReviewQuote id="kung-pao" class="menu-quote" />
+    </MenuSection>
+
+    <MenuSection category={menuCategory('home-style')} art="plate" />
+
+    <MenuSection category={menuCategory('cold-appetizers')} art="lotus" />
+
+    <MenuSection category={menuCategory('fried-chicken')} art="basket">
+      <ReviewQuote id="wings" class="menu-quote" />
+    </MenuSection>
+
+    <MenuSection category={menuCategory('drinks')} photos={[{ key: 'fruit-popsicles', focus: '50-50', caption: 'From the free dessert bar' }]}>
+      <ReviewQuote id="patitta" class="menu-quote" />
+    </MenuSection>
+  </div>
+
+  <CtaBand title="Hungry yet? Come upstairs." reviewId="heaven" />
+</BaseLayout>
+
+<script>
+  import '../../scripts/scroll-spy';
+</script>
+
+<style>
+  .menu-nav {
+    position: sticky;
+    top: var(--header-h);
+    z-index: 30;
+    background: rgb(246 239 227 / 0.97);
+    border-bottom: 1px solid var(--rule);
+    -webkit-backdrop-filter: blur(6px);
+    backdrop-filter: blur(6px);
+  }
+
+  .menu-nav__track {
+    display: flex;
+    gap: 0.4rem;
+    overflow-x: auto;
+    padding-block: 0.6rem;
+    scrollbar-width: none;
+  }
+
+  .menu-nav__track::-webkit-scrollbar {
+    display: none;
+  }
+
+  .menu-nav a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    padding: 0 0.9rem;
+    border-radius: 999px;
+    white-space: nowrap;
+    font-size: 0.9rem;
+    font-weight: 500;
+    text-decoration: none;
+    color: var(--espresso);
+    transition: background-color var(--dur-fast), color var(--dur-fast);
+  }
+
+  .menu-nav a:hover {
+    background: var(--paper-2);
+  }
+
+  .menu-nav a[aria-current] {
+    background: var(--espresso);
+    color: var(--rice);
+  }
+
+  .menu-body {
+    padding-block: clamp(2rem, 4vw, 3rem) clamp(3rem, 6vw, 5rem);
+  }
+
+  .menu-notes {
+    display: grid;
+    gap: 0.6rem;
+    max-width: 780px;
+    margin-bottom: 1.5rem;
+    padding: 1.1rem 1.25rem;
+    background: var(--rice);
+    box-shadow: inset 0 0 0 1px var(--rule);
+    font-size: 0.95rem;
+  }
+
+  .menu-notes p {
+    display: flex;
+    gap: 0.6rem;
+    align-items: flex-start;
+  }
+
+  .menu-notes :global(svg) {
+    flex: none;
+    width: 18px;
+    height: 18px;
+    margin-top: 0.2rem;
+    color: var(--jade);
+  }
+
+  .menu-extra {
+    margin-top: 2rem;
+    padding: clamp(1.25rem, 3vw, 2rem);
+    background: var(--rice);
+    box-shadow: 0 0 0 1px var(--rule);
+  }
+
+  .menu-body :global(.menu-quote) {
+    margin-top: 1.75rem;
+    max-width: 62ch;
+  }
+</style>

@@ -1,0 +1,211 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import CtaBand from '../../components/CtaBand.astro';
+import Eyebrow from '../../components/Eyebrow.astro';
+import Icon from '../../components/Icon.astro';
+import MenuItemRow from '../../components/MenuItemRow.astro';
+import PageHero from '../../components/PageHero.astro';
+import Photo from '../../components/Photo.astro';
+import ReviewCard from '../../components/ReviewCard.astro';
+import SkewerSteps from '../../components/SkewerSteps.astro';
+import { menuCategory } from '../../data/menu';
+import { PAGES } from '../../data/pages';
+
+const page = PAGES.skewers;
+const crumbs = [
+  { name: 'Menu', path: '/menu/' },
+  { name: 'Skewers in Pot', path: page.path },
+];
+const grill = menuCategory('bbq').items;
+---
+<BaseLayout title={page.title} description={page.description} ogPhoto={page.ogPhoto} crumbs={crumbs}>
+  <PageHero
+    photo="chuan-chuan-cup"
+    focus="50-35"
+    eyebrow={{ zh: '冷锅串串香', en: 'The dish on our sign' }}
+    title={page.h1}
+    lede="Pick your skewers from the self-serve fridge, have them BBQ-style or in the pot, then mix your own dip. Order two or twenty."
+    crumbs={crumbs}
+  >
+    <a class="btn btn-seal" href="/booking/">Reserve a table <Icon name="arrow" /></a>
+    <a class="btn btn-ghost-light" href="/menu/">See the full menu</a>
+  </PageHero>
+
+  <section class="section" aria-labelledby="how-title">
+    <div class="wrap">
+      <div class="how-head">
+        <Eyebrow zh="怎么吃" en="How it works" />
+        <h2 class="h2" id="how-title">Three easy steps.</h2>
+      </div>
+      <SkewerSteps size="large" />
+      <div class="how-foot">
+        <figure class="sauce frame">
+          <Photo photo="sauce-bar" focus="50-50" sizes="(min-width: 48em) 360px, 100vw" maxWidth={420} />
+          <figcaption class="sauce__cap">Step 3: the self-serve sauce bar and its “Popular Sauce Mixes”.</figcaption>
+        </figure>
+        <div class="how-notes">
+          <h3 class="h3">Good to know</h3>
+          <ul class="prose">
+            <li>Skewers in pot are priced per stick; the chicken-broth chili oil pot base is extra if you choose the pot.</li>
+            <li>Add our grilled favourites, like the signature lamb and Angus beef skewers, from the menu below.</li>
+            <li>Pair them with handmade noodles or a bubble tea, and finish with free ice cream.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section band" aria-labelledby="what-title">
+    <div class="wrap split">
+      <figure class="frame ratio-4-5 what-photo">
+        <Photo photo="panda-mural" focus="50-35" sizes="(min-width: 56.25em) 460px, 100vw" maxWidth={620} />
+      </figure>
+      <div class="prose">
+        <Eyebrow zh="巴蜀风味" en="A Sichuan favourite" />
+        <h2 class="h2" id="what-title">What is 冷锅串串香?</h2>
+        <p>
+          Chuan chuan (串串) simply means “skewers”. It’s a much-loved Sichuan way to eat: a table full of small
+          skewers, a pot of chili oil broth, and plenty of choice. Our storefront poster calls it the taste of Bashu, the
+          old name for Sichuan and Chongqing.
+        </p>
+        <p>
+          At Starry Coop, you build your own tray from the self-serve fridge. Have your picks grilled BBQ-style, or
+          enjoy them in the pot, then make a dip at the sauce bar. It’s relaxed, social and easy to share.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="grill-title">
+    <div class="wrap grill">
+      <div class="grill__copy">
+        <Eyebrow zh="烧烤" en="From the grill" />
+        <h2 class="h2" id="grill-title">BBQ skewers, grilled to order.</h2>
+        <p class="lede grill__lede">Signature lamb, Angus beef, honey pork belly and more, priced per skewer.</p>
+        <ul class="grill__list">
+          {grill.map((item) => <MenuItemRow item={item} showDescription={false} />)}
+        </ul>
+        <p class="fine">Dine-in prices, subject to change.</p>
+      </div>
+      <div class="grill__photos">
+        <figure class="frame ratio-4-5">
+          <Photo photo="pork-belly-beef-skewers" focus="50-50" sizes="(min-width: 56.25em) 300px, 50vw" maxWidth={420} />
+        </figure>
+        <figure class="frame ratio-4-5">
+          <Photo photo="skewers-bamboo-tray" focus="50-50" sizes="(min-width: 56.25em) 300px, 50vw" maxWidth={420} />
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <section class="section band" aria-labelledby="skewer-reviews">
+    <div class="wrap">
+      <Eyebrow zh="食评" en="Guests on our skewers" />
+      <h2 class="h2" id="skewer-reviews">“My new top spot.”</h2>
+      <ul class="review-grid">
+        <li><ReviewCard id="skewers-world" /></li>
+        <li><ReviewCard id="angelica" /></li>
+        <li><ReviewCard id="couple" /></li>
+      </ul>
+    </div>
+  </section>
+
+  <CtaBand title="Bring an appetite and a few friends." reviewId="marc" />
+</BaseLayout>
+
+<style>
+  .how-head {
+    margin-bottom: clamp(2rem, 4vw, 3rem);
+  }
+
+  .how-foot {
+    display: grid;
+    grid-template-columns: minmax(0, 360px) minmax(0, 1fr);
+    gap: clamp(2rem, 5vw, 4rem);
+    align-items: center;
+    margin-top: clamp(2.5rem, 5vw, 4rem);
+  }
+
+  .sauce {
+    aspect-ratio: 6 / 5;
+    box-shadow: 0 0 0 1px var(--rule);
+  }
+
+  .sauce__cap {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    padding: 1.4rem 0.8rem 0.6rem;
+    font-size: 0.82rem;
+    color: var(--parch-text);
+    background: linear-gradient(0deg, rgb(33 22 17 / 0.82), rgb(33 22 17 / 0));
+  }
+
+  .how-notes .prose {
+    margin-top: 1rem;
+  }
+
+  .what-photo {
+    box-shadow: 0 0 0 1px var(--rule);
+  }
+
+  .grill {
+    display: grid;
+    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+    gap: clamp(2rem, 5vw, 5rem);
+    align-items: start;
+  }
+
+  .grill__lede {
+    margin: 1rem 0 1.5rem;
+  }
+
+  .grill__list {
+    columns: 2;
+    column-gap: 2.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .grill__list :global(.mrow) {
+    break-inside: avoid;
+  }
+
+  .grill__photos {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    position: sticky;
+    top: calc(var(--header-h) + 1.5rem);
+  }
+
+  .grill__photos .frame {
+    box-shadow: 0 0 0 1px var(--rule);
+  }
+
+  .review-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1.75rem;
+    margin-top: 2.5rem;
+  }
+
+  @media (max-width: 56.24em) {
+    .how-foot,
+    .grill {
+      grid-template-columns: 1fr;
+    }
+    .grill__photos {
+      position: static;
+    }
+    .review-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 40em) {
+    .grill__list {
+      columns: 1;
+    }
+  }
+</style>

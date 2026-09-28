@@ -1,0 +1,129 @@
+---
+/** Closing call-to-action band: Reserve / Call / Directions + one review quote. */
+import Icon from './Icon.astro';
+import OpenStatus from './OpenStatus.astro';
+import ReviewQuote from './ReviewQuote.astro';
+import { SITE, telHref } from '../data/site';
+import { ONLINE_BOOKING } from '../lib/booking-endpoint';
+
+interface Props {
+  title?: string;
+  text?: string;
+  reviewId?: string;
+}
+
+const {
+  title = 'Come hungry. We’ll save you a seat upstairs.',
+  text = 'Open every day from 11 a.m., upstairs at 1373 Marine Drive in Ambleside.',
+  reviewId,
+} = Astro.props;
+---
+<section class="cta-band band" aria-labelledby="cta-title">
+  <div class="wrap cta-inner">
+    <div class="cta-art" aria-hidden="true">
+      <svg viewBox="0 0 200 200" class="cta-pattern">
+        <circle cx="100" cy="100" r="92" class="ring" />
+        <circle cx="100" cy="100" r="78" class="ring ring--thin" />
+        <g transform="translate(58 52) scale(2.1)" class="moon"><use href="#i-moon" width="40" height="40" /></g>
+      </svg>
+      <span class="seal seal--lg" lang="zh-Hans">星月</span>
+    </div>
+    <div class="cta-copy">
+      <h2 class="h2" id="cta-title">{title}</h2>
+      <p class="cta-text">{text}</p>
+      <OpenStatus class="cta-status" />
+      <div class="btn-row cta-actions">
+        <a class="btn btn-seal" href="/booking/">{ONLINE_BOOKING ? 'Request a table' : 'How to reserve'} <Icon name="arrow" /></a>
+        <a class="btn btn-ghost num" href={telHref}><Icon name="phone" />Call {SITE.phone.display}</a>
+        <a class="btn btn-ghost" href={SITE.links.directions} target="_blank" rel="noopener">
+          <Icon name="pin" />Directions<span class="sr-only"> (opens Google Maps in a new tab)</span>
+        </a>
+      </div>
+    </div>
+    {reviewId && <ReviewQuote id={reviewId} class="cta-quote" />}
+  </div>
+</section>
+
+<style>
+  .cta-band {
+    padding-block: clamp(3.5rem, 6vw, 6rem);
+    border-top: 1px solid var(--rule);
+  }
+
+  .cta-inner {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1.4fr) minmax(0, 1fr);
+    gap: clamp(2rem, 4vw, 4rem);
+    align-items: center;
+  }
+
+  .cta-art {
+    position: relative;
+    width: 160px;
+    height: 160px;
+  }
+
+  .cta-pattern {
+    width: 100%;
+    height: 100%;
+  }
+
+  .ring {
+    fill: none;
+    stroke: var(--line);
+    stroke-width: 1;
+  }
+
+  .ring--thin {
+    stroke: var(--rule);
+    stroke-dasharray: 2 5;
+  }
+
+  .moon {
+    color: var(--espresso);
+  }
+
+  .cta-art .seal {
+    position: absolute;
+    right: -6px;
+    bottom: 6px;
+  }
+
+  .cta-text {
+    margin-top: 0.9rem;
+    color: var(--tea);
+    max-width: 46ch;
+  }
+
+  .cta-copy :global(.cta-status) {
+    margin-top: 1.2rem;
+  }
+
+  .cta-actions {
+    margin-top: 1.4rem;
+  }
+
+  @media (max-width: 68em) {
+    .cta-inner {
+      grid-template-columns: auto minmax(0, 1fr);
+    }
+    .cta-inner :global(.cta-quote) {
+      grid-column: 1 / -1;
+    }
+  }
+
+  @media (max-width: 40em) {
+    .cta-inner {
+      grid-template-columns: 1fr;
+    }
+    .cta-art {
+      width: 112px;
+      height: 112px;
+    }
+    .cta-art .seal {
+      width: 3.1rem;
+      height: 3.1rem;
+      font-size: 1.05rem;
+    }
+  }
+</style>

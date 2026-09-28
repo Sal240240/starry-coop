@@ -1,0 +1,115 @@
+---
+/** Hand-drawn style line illustrations (decorative, currentColor + cinnabar accent). */
+export type LineArtName = 'bowl' | 'pot' | 'wok' | 'plate' | 'lotus' | 'basket' | 'tea' | 'duck' | 'sauces' | 'skewer' | 'dumpling';
+
+interface Props {
+  name: LineArtName;
+  class?: string;
+}
+
+const { name, class: className } = Astro.props;
+---
+<svg class:list={['line-art', className]} viewBox="0 0 96 96" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+  {name === 'bowl' && (
+    <>
+      <path d="M12 46h72c0 17-16 30-36 30S12 63 12 46Z" /><path d="M36 76v6h24v-6" />
+      <path d="M22 46c3-6 9-6 12 0s9 6 12 0 9-6 12 0 9 6 12 0" />
+      <path class="accent" d="M62 12 44 44M72 16 52 44" />
+    </>
+  )}
+  {name === 'pot' && (
+    <>
+      <path d="M16 40h64v26a12 12 0 0 1-12 12H28a12 12 0 0 1-12-12V40Z" /><path d="M8 44h8M80 44h8" />
+      <path d="M22 40c0-6 12-10 26-10s26 4 26 10" /><path d="M44 30v-4h8v4" />
+      <path class="accent" d="M34 22c-3-3 3-6 0-10M48 20c-3-3 3-6 0-10M62 22c-3-3 3-6 0-10" />
+      <path d="M26 54h44" stroke-dasharray="2 5" />
+    </>
+  )}
+  {name === 'wok' && (
+    <>
+      <path d="M10 44c0 14 17 24 38 24s38-10 38-24Z" /><path d="M86 44l6-4" /><path d="M10 44l-4-3" />
+      <path class="accent" d="M30 34c2-4 6-5 9-3M50 30c3-3 7-3 9 0M62 36c3-2 6-1 7 2" />
+      <path class="accent" d="M40 22c-2-3 2-5 0-8M54 20c-2-3 2-5 0-8" />
+      <path d="M36 68v8h24v-8" />
+    </>
+  )}
+  {name === 'plate' && (
+    <>
+      <ellipse cx="48" cy="56" rx="38" ry="16" /><ellipse cx="48" cy="54" rx="26" ry="9" />
+      <path class="accent" d="M38 50c4-6 16-6 20 0M44 46l2-4M52 46l-1-4" />
+      <path d="M78 20v28M84 20v10a6 6 0 0 1-12 0V20" />
+    </>
+  )}
+  {name === 'lotus' && (
+    <>
+      <circle cx="48" cy="52" r="28" /><circle cx="48" cy="52" r="6" />
+      <circle class="accent" cx="48" cy="34" r="5" /><circle class="accent" cx="64" cy="44" r="5" /><circle class="accent" cx="62" cy="63" r="5" />
+      <circle class="accent" cx="34" cy="63" r="5" /><circle class="accent" cx="32" cy="44" r="5" />
+    </>
+  )}
+  {name === 'basket' && (
+    <>
+      <path d="M14 42h68l-8 34H22Z" /><path d="M20 50h56M24 60h48M28 70h40" opacity=".5" />
+      <path class="accent" d="M30 42c-2-8 4-14 10-12 2-6 12-6 14 0 6-2 12 4 10 12" />
+      <path d="M8 42h80" />
+    </>
+  )}
+  {name === 'tea' && (
+    <>
+      <path d="M28 30h40l-5 50a6 6 0 0 1-6 5H39a6 6 0 0 1-6-5Z" /><path d="M24 30h48" />
+      <path class="accent" d="M56 30 64 8" />
+      <circle class="accent" cx="42" cy="72" r="2.6" /><circle class="accent" cx="50" cy="75" r="2.6" /><circle class="accent" cx="55" cy="68" r="2.6" />
+      <path d="M31 46h34" opacity=".5" />
+    </>
+  )}
+  {name === 'duck' && (
+    <>
+      <path d="M18 58c0-14 14-24 30-24s24 8 24 18c0 12-14 18-30 18S18 66 18 58Z" />
+      <path d="M72 50c4-2 10-2 14 2" /><path d="M24 70l-8 10M72 66l8 12" />
+      <path class="accent" d="M32 48c6-4 14-4 20 0M34 56c6-3 12-3 18 0" />
+      <path d="M40 26c-2-3 2-5 0-8M52 24c-2-3 2-5 0-8" opacity=".6" />
+    </>
+  )}
+  {name === 'sauces' && (
+    <>
+      <path d="M8 54h28c0 9-6 16-14 16S8 63 8 54Z" /><path d="M36 58h28c0 9-6 16-14 16s-14-7-14-16Z" /><path d="M62 50h28c0 9-6 16-14 16s-14-7-14-16Z" />
+      <path class="accent" d="M14 54c2-3 6-3 8 0M42 58c2-3 6-3 8 0M68 50c2-3 6-3 8 0" />
+      <path d="M50 20v26M46 26l4-6 4 6" />
+    </>
+  )}
+  {name === 'dumpling' && (
+    <>
+      <path d="M12 58c4-18 20-28 36-28s32 10 36 28c-8 8-22 12-36 12s-28-4-36-12Z" />
+      <path class="accent" d="M28 40c2 4 2 8 0 12M40 34c2 5 2 10 0 15M52 34c-2 5-2 10 0 15M64 40c-2 4-2 8 0 12" />
+      <path d="M20 74h56" opacity=".5" />
+    </>
+  )}
+  {name === 'skewer' && (
+    <>
+      <path d="M14 82 82 14" />
+      <rect class="accent" x="30" y="46" width="14" height="10" rx="3" transform="rotate(-45 37 51)" />
+      <rect class="accent" x="44" y="32" width="14" height="10" rx="3" transform="rotate(-45 51 37)" />
+      <rect class="accent" x="58" y="18" width="14" height="10" rx="3" transform="rotate(-45 65 23)" />
+    </>
+  )}
+</svg>
+
+<style>
+  .line-art {
+    width: 88px;
+    height: 88px;
+    color: var(--espresso);
+  }
+
+  .line-art :global(.accent) {
+    stroke: var(--cinnabar);
+  }
+
+  :global(.on-dark) .line-art {
+    color: var(--parch-text);
+  }
+
+  :global(.on-dark) .line-art :global(.accent) {
+    stroke: var(--cinnabar-on-dark);
+  }
+</style>

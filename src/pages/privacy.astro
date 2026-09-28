@@ -1,0 +1,102 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PlainHero from '../components/PlainHero.astro';
+import { PAGES } from '../data/pages';
+import { SITE, telHref } from '../data/site';
+import { ONLINE_BOOKING } from '../lib/booking-endpoint';
+
+const page = PAGES.privacy;
+const crumbs = [{ name: 'Privacy', path: page.path }];
+const updated = 'September 2026';
+---
+<BaseLayout title={page.title} description={page.description} ogPhoto={page.ogPhoto} crumbs={crumbs} headerTone="solid">
+  <PlainHero
+    eyebrow={{ zh: '隐私', en: 'Your information' }}
+    title={page.h1}
+    lede={`How ${SITE.name} handles personal information. Last updated ${updated}.`}
+    crumbs={crumbs}
+    art="sauces"
+  />
+
+  <section class="section" aria-label="Privacy policy">
+    <div class="wrap wrap--narrow prose">
+      <svg class="shield" viewBox="0 0 80 90" aria-hidden="true">
+        <path d="M40 4 72 16v24c0 22-14 38-32 46C22 78 8 62 8 40V16Z" class="shield__body" />
+        <path d="M26 46l10 10 20-22" class="shield__check" />
+      </svg>
+      <p>
+        {SITE.name} {SITE.nameZh} (“we”, “us”) is a restaurant at {SITE.address.street}, {SITE.address.city}, British
+        Columbia. We follow British Columbia’s <em>Personal Information Protection Act</em> (PIPA) and collect only the
+        information we need to look after our guests.
+      </p>
+
+      <h2>What we collect</h2>
+      <ul>
+        <li><strong>Table requests{ONLINE_BOOKING ? '' : ' (if online requests are enabled)'}:</strong> your name, phone number, and optionally your email address, the date, time and size of your party, an occasion, and any notes you add (for example allergies or a high chair).</li>
+        <li><strong>Phone calls:</strong> the details you give us to reserve a table or order food.</li>
+        <li><strong>Browsing this site:</strong> nothing personal. We don’t use cookies, analytics, advertising trackers or social media widgets. Our hosting provider keeps standard, short-term server logs (such as IP addresses) for security.</li>
+      </ul>
+
+      <h2>Why we use it</h2>
+      <p>
+        To confirm and manage your reservation, contact you about it, and prepare for your visit (for example, dietary
+        needs). We never sell your information or use it for marketing without your consent.
+      </p>
+
+      <h2>Where it goes</h2>
+      <ul>
+        <li>This website is hosted on Amazon Web Services (AWS).</li>
+        <li>Online table requests are processed by our booking service on AWS in Canada (ca-central-1) and delivered by email to our restaurant inbox. To stop spam, the service keeps a one-way (hashed) form of your IP address for about an hour; it can’t be used to identify you.</li>
+        <li>If you choose to load the interactive map, Google receives your request under Google’s own privacy policy. It never loads unless you ask for it.</li>
+      </ul>
+
+      <h2>How long we keep it</h2>
+      <p>
+        We keep table-request details only as long as we need them to look after your booking, and delete them within
+        30 days after your visit, unless the law requires us to keep them longer.
+      </p>
+
+      <h2>Your choices</h2>
+      <p>
+        You can ask to see, correct or delete the personal information we hold about you, or withdraw your consent,
+        by calling us at <a href={telHref}>{SITE.phone.display}</a>. We’ll respond within 30 days.
+      </p>
+
+      <h2>Safeguards</h2>
+      <p>
+        This site is served only over encrypted HTTPS connections with strict security headers, and table requests are
+        checked and sent over encrypted connections. Access to requests is limited to the staff who manage reservations.
+      </p>
+
+      <h2>Questions</h2>
+      <p>
+        Our owner is responsible for privacy at {SITE.name}. Please call us at <a href={telHref}>{SITE.phone.display}</a> and
+        ask for the owner. If you’re not satisfied with our response, you can
+        contact the Office of the Information and Privacy Commissioner for British Columbia.
+      </p>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .shield {
+    width: 72px;
+    height: 81px;
+    margin-bottom: 0.5rem;
+  }
+
+  .shield__body {
+    fill: var(--seaglass);
+    stroke: var(--jade);
+    stroke-width: 3;
+    stroke-linejoin: round;
+  }
+
+  .shield__check {
+    fill: none;
+    stroke: var(--jade);
+    stroke-width: 5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+</style>

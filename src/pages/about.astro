@@ -1,0 +1,233 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import AmblesideMap from '../components/AmblesideMap.astro';
+import CtaBand from '../components/CtaBand.astro';
+import Eyebrow from '../components/Eyebrow.astro';
+import Icon from '../components/Icon.astro';
+import PageHero from '../components/PageHero.astro';
+import Photo from '../components/Photo.astro';
+import ReviewCard from '../components/ReviewCard.astro';
+import ReviewQuote from '../components/ReviewQuote.astro';
+import { PAGES } from '../data/pages';
+import { SITE } from '../data/site';
+
+const page = PAGES.about;
+const crumbs = [{ name: 'About', path: page.path }];
+---
+<BaseLayout title={page.title} description={page.description} ogPhoto={page.ogPhoto} crumbs={crumbs} headerTone="solid">
+  <PageHero
+    variant="split"
+    photo="dining-room-mural"
+    focus="50-50"
+    eyebrow={{ zh: '小馆', en: 'About Starry Coop' }}
+    title={page.h1}
+    lede="A hidden kitchen tucked away in West Vancouver: cozy, relaxed and a little different from the usual."
+    crumbs={crumbs}
+  >
+    <a class="btn btn-seal" href="/menu/">See the menu <Icon name="arrow" /></a>
+    <a class="btn btn-ghost" href="/contact/">Find us</a>
+  </PageHero>
+
+  <section class="section" aria-labelledby="story-title">
+    <div class="wrap story">
+      <div class="prose">
+        <Eyebrow zh="我们的故事" en="Our story" />
+        <h2 class="h2" id="story-title">Freshly made, to order, with care.</h2>
+        <p>
+          Our Chinese name, 星月小馆, translates roughly as “the little restaurant of the stars and moon”. We opened upstairs at
+          1373 Marine Drive with a simple idea: freshly made-to-order food, quality ingredients and comforting flavours,
+          at friendly prices.
+        </p>
+        <p>
+          Our owner-chef makes the noodles, dumplings and wontons by hand, along with our sauces. The menu brings together
+          Sichuan-style skewers in pot, BBQ skewers, Taiwanese favourites like braised beef noodle soup and braised pork
+          rice, sharing hot pots, wok-fried dishes, crispy fried chicken and handcrafted bubble tea.
+        </p>
+        <p>
+          Plenty of choices, plenty of flavour, and free coffee and ice cream all day. Come hungry and enjoy.
+        </p>
+      </div>
+      <aside class="story__aside">
+        <span class="seal seal--lg" lang="zh-Hans" aria-hidden="true">星月</span>
+        <ReviewQuote id="andrea" />
+      </aside>
+    </div>
+  </section>
+
+  <section class="section band" aria-labelledby="room-title">
+    <div class="wrap">
+      <div class="room-head">
+        <Eyebrow zh="环境" en="The room" />
+        <h2 class="h2" id="room-title">Bright, cozy and full of little details.</h2>
+        <p class="lede room-lede">Terrazzo tables, coral booths, hand-painted murals, a sunroom hung with greenery, and a sauce bar and dessert bar you can help yourself to.</p>
+      </div>
+      <div class="gallery">
+        <figure class="gallery__a frame"><Photo photo="dining-room-sunlit" focus="50-50" sizes="(min-width: 56.25em) 560px, 100vw" maxWidth={760} /><figcaption>The sunlit dining room</figcaption></figure>
+        <figure class="gallery__b frame"><Photo photo="panda-mural" focus="50-35" sizes="(min-width: 56.25em) 300px, 50vw" maxWidth={420} /><figcaption>Our skewer-loving panda</figcaption></figure>
+        <figure class="gallery__c frame"><Photo photo="sunroom-skylight" focus="50-50" sizes="(min-width: 56.25em) 300px, 50vw" maxWidth={420} /><figcaption>The sunroom</figcaption></figure>
+        <figure class="gallery__d frame"><Photo photo="hanging-planters" focus="50-50" sizes="(min-width: 56.25em) 300px, 50vw" maxWidth={420} /><figcaption>Greenery overhead</figcaption></figure>
+      </div>
+      <ul class="room-reviews">
+        <li><ReviewCard id="big-plate-chicken" /></li>
+        <li><ReviewCard id="angelica" /></li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="values-title">
+    <div class="wrap split">
+      <div>
+        <Eyebrow zh="欢迎所有人" en="Everyone’s welcome" />
+        <h2 class="h2" id="values-title">A women-owned, family-friendly kitchen.</h2>
+        <ul class="values">
+          {SITE.googleAttributes.map((attr) => (
+            <li><Icon name="check" /><span>{attr}<span aria-hidden="true">*</span></span></li>
+          ))}
+          <li><Icon name="users" /><span>Families welcome, with a reading and games corner</span></li>
+          <li><Icon name="cup" /><span>Free coffee and ice cream, all day</span></li>
+        </ul>
+        <p class="fine values__note">*As listed on our Google Business Profile.</p>
+        <ReviewQuote id="baby-toy" class="values__quote" />
+      </div>
+      <figure class="frame ratio-4-5 values__photo">
+        <Photo photo="games-corner" focus="50-50" sizes="(min-width: 56.25em) 460px, 100vw" maxWidth={620} />
+        <figcaption class="values__cap">The reading and games corner</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section class="section band--seaglass" aria-labelledby="hood-title">
+    <div class="wrap split">
+      <div class="prose">
+        <Eyebrow zh="西温" en="The neighbourhood" />
+        <h2 class="h2" id="hood-title">In the heart of Ambleside.</h2>
+        <p>
+          We’re on Marine Drive in Ambleside, West Vancouver’s waterfront village. Ambleside Park and Beach, the Seawalk,
+          the Ferry Building Gallery and Millennium Park are all a short walk away, so it’s easy to pair lunch or dinner with
+          a stroll by the water.
+        </p>
+        <ReviewQuote id="ambleside-walk" />
+      </div>
+      <div class="hood-map"><AmblesideMap id="about-map" /></div>
+    </div>
+  </section>
+
+  <CtaBand reviewId="welcoming" />
+</BaseLayout>
+
+<style>
+  .story {
+    display: grid;
+    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+    gap: clamp(2rem, 6vw, 6rem);
+    align-items: center;
+  }
+
+  .story__aside {
+    display: grid;
+    gap: 1.5rem;
+    justify-items: start;
+  }
+
+  .room-lede {
+    margin-top: 1rem;
+    max-width: 60ch;
+  }
+
+  .gallery {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr;
+    grid-template-rows: 240px 240px;
+    gap: 1rem;
+    margin-top: 2.5rem;
+  }
+
+  .gallery figure {
+    box-shadow: 0 0 0 1px var(--rule);
+  }
+
+  .gallery figcaption,
+  .values__cap {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    padding: 1.4rem 0.8rem 0.6rem;
+    font-size: 0.8rem;
+    color: var(--parch-text);
+    background: linear-gradient(0deg, rgb(33 22 17 / 0.8), rgb(33 22 17 / 0));
+  }
+
+  .gallery__a {
+    grid-row: span 2;
+  }
+
+  .gallery__b {
+    grid-row: span 2;
+  }
+
+  .room-reviews {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.75rem;
+    margin-top: 3rem;
+  }
+
+  .values {
+    display: grid;
+    gap: 0.7rem;
+    margin-top: 1.5rem;
+  }
+
+  .values li {
+    display: flex;
+    gap: 0.7rem;
+    align-items: flex-start;
+  }
+
+  .values :global(svg) {
+    flex: none;
+    width: 20px;
+    height: 20px;
+    margin-top: 0.15rem;
+    color: var(--jade);
+  }
+
+  .values__note {
+    margin-top: 0.8rem;
+  }
+
+  :global(.values__quote) {
+    margin-top: 1.8rem;
+  }
+
+  .values__photo {
+    box-shadow: 0 0 0 1px var(--rule);
+  }
+
+  .hood-map {
+    background: var(--rice);
+    box-shadow: 0 0 0 1px var(--rule);
+    padding: 0.6rem;
+  }
+
+  @media (max-width: 56.24em) {
+    .story {
+      grid-template-columns: 1fr;
+    }
+    .gallery {
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: 220px 180px 180px;
+    }
+    .gallery__a {
+      grid-column: 1 / -1;
+      grid-row: auto;
+    }
+    .gallery__b {
+      grid-row: span 2;
+    }
+    .room-reviews {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

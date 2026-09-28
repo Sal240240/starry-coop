@@ -1,0 +1,157 @@
+---
+import Eyebrow from '../Eyebrow.astro';
+import Icon from '../Icon.astro';
+import Photo from '../Photo.astro';
+import ReviewQuote from '../ReviewQuote.astro';
+import SkewerSteps from '../SkewerSteps.astro';
+import { displayPrice, findItem } from '../../data/menu';
+
+const premium = [
+  'Signature Lamb Skewer',
+  'Angus Beef Skewer',
+  'BBQ Honey Pork Belly',
+  'Pepper Chicken Cartilage',
+  'Taiwanese Style Sausage',
+].map((name) => findItem(name));
+---
+<section class="section on-dark skewers" id="skewers" aria-labelledby="skewers-title">
+  <div class="wrap skewers__grid">
+    <div class="skewers__copy reveal">
+      <Eyebrow zh="冷锅串串香" en="Our namesake" />
+      <h2 class="h2" id="skewers-title">Skewers in pot, $0.58 a stick.</h2>
+      <p class="lede skewers__lede">
+        The dish on our sign. Fill a tray from the self-serve fridge, have your skewers BBQ-style or in the pot,
+        then mix your own dip.
+      </p>
+      <div class="skewers__steps">
+        <SkewerSteps tone="dark" />
+      </div>
+
+      <div class="premium">
+        <p class="premium__title">Also from the grill</p>
+        <ul class="premium__chips" aria-label="Grilled skewer prices">
+          {premium.map((item) => (
+            <li>{item.name.replace(' Skewer', '')} <b>{displayPrice(item)}</b></li>
+          ))}
+        </ul>
+      </div>
+
+      <ReviewQuote id="skewers-world" class="skewers__quote" />
+      <a class="link-arrow skewers__link" href="/menu/skewers-in-pot/">How skewers in pot work <Icon name="arrow" /></a>
+    </div>
+
+    <div class="skewers__visual reveal">
+      <figure class="skewers__main">
+        <div class="frame ratio-4-5">
+          <Photo photo="chuan-chuan-cup" focus="50-35" sizes="(min-width: 56.25em) 460px, 90vw" maxWidth={640} />
+        </div>
+        <figcaption class="caption">In the pot: chicken-broth chili oil, with dips in brass bowls.</figcaption>
+      </figure>
+      <figure class="skewers__inset">
+        <div class="frame ratio-1-1">
+          <Photo photo="sauce-bar" focus="50-50" sizes="200px" maxWidth={240} />
+        </div>
+        <figcaption>The sauce bar</figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<style>
+  .skewers__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+    gap: clamp(2.5rem, 6vw, 5.5rem);
+    align-items: center;
+  }
+
+  .skewers__lede {
+    margin-top: 1rem;
+  }
+
+  .skewers__steps {
+    margin-top: 2.5rem;
+  }
+
+  .premium {
+    margin-top: 2.25rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid rgb(243 234 219 / 0.2);
+  }
+
+  .premium__title {
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--cinnabar-on-dark);
+  }
+
+  .premium__chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 0.9rem;
+  }
+
+  .premium__chips li {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0.5rem;
+    padding: 0.45rem 0.75rem;
+    border: 1px solid rgb(243 234 219 / 0.28);
+    border-radius: var(--radius);
+    font-size: 0.88rem;
+  }
+
+  .premium__chips b {
+    font: 500 0.95rem var(--font-display);
+    font-variant-numeric: tabular-nums;
+    color: var(--price-on-dark);
+  }
+
+  .skewers__copy :global(.skewers__quote) {
+    margin-top: 2rem;
+  }
+
+  .skewers__link {
+    margin-top: 1.6rem;
+  }
+
+  .skewers__visual {
+    position: relative;
+    padding: 0 0 3.5rem 3.5rem;
+  }
+
+  .skewers__main .caption {
+    padding-left: 44%;
+  }
+
+  .skewers__inset {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 44%;
+    padding: 7px;
+    background: var(--rice);
+    box-shadow: 0 24px 40px -18px rgb(0 0 0 / 0.55);
+    transform: rotate(-2deg);
+  }
+
+  .skewers__inset figcaption {
+    padding: 0.55rem 0.3rem 0.2rem;
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--tea);
+  }
+
+  @media (max-width: 56.24em) {
+    .skewers__grid {
+      grid-template-columns: 1fr;
+    }
+    .skewers__visual {
+      max-width: 520px;
+      padding: 0 0 3rem 2.5rem;
+    }
+  }
+</style>

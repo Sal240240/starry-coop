@@ -1,0 +1,124 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  Starry Coop reservation-request endpoint. A Lambda Function URL (CORS locked
+  to the website origins) validates each request and emails it to the
+  restaurant via Amazon SES. Deploy in ca-central-1 to keep data in Canada.
+
+Parameters:
+  AllowedOrigins:
+    Type: CommaDelimitedList
+    Description: Website origins allowed to post, e.g. https://www.example.ca,https://main.d123.amplifyapp.com
+  ToEmail:
+    Type: String
+    Description: Restaurant inbox that receives table requests (also receives abuse alarms)
+  FromEmail:
+    Type: String
+    Description: SES-verified sender address (e.g. bookings@example.ca)
+
+Globals:
+  Function:
+    Runtime: nodejs22.x
+    Architectures: [arm64]
+    MemorySize: 256
+    Timeout: 10
+
+Resources:
+  RateLimitTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: pk
+          AttributeType: S
+      KeySchema:
+        - AttributeName: pk
+          KeyType: HASH
+      TimeToLiveSpecification:
+        AttributeName: expiresAt
+        Enabled: true
+
+  BookingFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      # Pre-bundled by `npm run bundle` (esbuild) so the handler can share
+      # validation code with the website in ../../src/lib.
+      CodeUri: dist/
+      Handler: index.handler
+      # Hard ceiling on parallel executions: caps cost under any flood.
+      ReservedConcurrentExecutions: 5
+      Environment:
+        Variables:
+          ALLOWED_ORIGINS: !Join [',', !Ref AllowedOrigins]
+          TO_EMAIL: !Ref ToEmail
+          FROM_EMAIL: !Ref FromEmail
+          RATE_TABLE: !Ref RateLimitTable
+      Policies:
+        - Statement:
+            - Effect: Allow
+              Action: ses:SendEmail
+              Resource: '*'
+              Condition:
+                StringEquals:
+                  ses:FromAddress: !Ref FromEmail
+        - DynamoDBCrudPolicy:
+            TableName: !Ref RateLimitTable
+      FunctionUrlConfig:
+        AuthType: NONE
+        Cors:
+          AllowOrigins: !Ref AllowedOrigins
+          AllowMethods: [POST]
+          AllowHeaders: [content-type]
+          MaxAge: 600
+
+  BookingLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub /aws/lambda/${BookingFunction}
+      RetentionInDays: 30
+
+  AlarmTopic:
+    Type: AWS::SNS::Topic
+    Properties:
+      Subscription:
+        - Protocol: email
+          Endpoint: !Ref ToEmail
+
+  InvocationSpikeAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmDescription: More than 60 booking requests in an hour. Possible abuse; check the logs.
+      Namespace: AWS/Lambda
+      MetricName: Invocations
+      Dimensions:
+        - Name: FunctionName
+          Value: !Ref BookingFunction
+      Statistic: Sum
+      Period: 3600
+      EvaluationPeriods: 1
+      Threshold: 60
+      ComparisonOperator: GreaterThanThreshold
+      TreatMissingData: notBreaching
+      AlarmActions: [!Ref AlarmTopic]
+
+  ErrorAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmDescription: Booking function errors. Requests may not be reaching the inbox.
+      Namespace: AWS/Lambda
+      MetricName: Errors
+      Dimensions:
+        - Name: FunctionName
+          Value: !Ref BookingFunction
+      Statistic: Sum
+      Period: 900
+      EvaluationPeriods: 1
+      Threshold: 0
+      ComparisonOperator: GreaterThanThreshold
+      TreatMissingData: notBreaching
+      AlarmActions: [!Ref AlarmTopic]
+
+Outputs:
+  BookingEndpoint:
+    Description: Set this as PUBLIC_BOOKING_ENDPOINT in the Amplify console, then redeploy.
+    Value: !GetAtt BookingFunctionUrl.FunctionUrl

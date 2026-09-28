@@ -1,0 +1,188 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import CtaBand from '../components/CtaBand.astro';
+import Eyebrow from '../components/Eyebrow.astro';
+import Icon from '../components/Icon.astro';
+import PageHero from '../components/PageHero.astro';
+import Photo from '../components/Photo.astro';
+import RatingSummary from '../components/RatingSummary.astro';
+import ReviewCard from '../components/ReviewCard.astro';
+import { PAGES } from '../data/pages';
+import { REVIEWS, REVIEW_TOPIC_LABELS, type ReviewTopic } from '../data/reviews';
+import { SITE } from '../data/site';
+
+const page = PAGES.reviews;
+const crumbs = [{ name: 'Reviews', path: page.path }];
+const topics: ReviewTopic[] = ['noodles', 'dumplings', 'skewers', 'family', 'value', 'atmosphere', 'service'];
+---
+<BaseLayout title={page.title} description={page.description} ogPhoto={page.ogPhoto} crumbs={crumbs}>
+  <PageHero
+    photo="skewers-bamboo-tray"
+    focus="50-50"
+    eyebrow={{ zh: '食评', en: 'Google reviews' }}
+    title={page.h1}
+    lede="Handmade noodles, juicy dumplings, skewers from all over the world, and a welcome that keeps people coming back. Here it is in our guests’ own words."
+    crumbs={crumbs}
+  >
+    <a class="btn btn-seal" href={SITE.links.googleReviews} target="_blank" rel="noopener">Read all on Google <Icon name="ext" /><span class="sr-only"> (opens in a new tab)</span></a>
+  </PageHero>
+
+  <section class="section" aria-labelledby="all-title">
+    <div class="wrap">
+      <div class="reviews-top">
+        <div>
+          <Eyebrow zh="真实评价" en="In their own words" />
+          <h2 class="h2" id="all-title">A selection of our Google reviews.</h2>
+          <p class="fine reviews-note">Quoted word for word from our public Google Business Profile. “…” marks where we’ve shortened a review.</p>
+        </div>
+        <RatingSummary showAllLink={false} />
+      </div>
+
+      <div class="filters" role="group" aria-label="Filter reviews by topic" data-review-filters>
+        <button type="button" class="filter" aria-pressed="true" data-topic="all">All</button>
+        {topics.map((t) => (
+          <button type="button" class="filter" aria-pressed="false" data-topic={t}>{REVIEW_TOPIC_LABELS[t]}</button>
+        ))}
+      </div>
+      <p class="sr-only" role="status" aria-live="polite" data-review-count></p>
+
+      <ul class="masonry" data-review-list>
+        {REVIEWS.map((r, i) => (
+          <>
+            <li data-topics={r.topics.join(' ')}><ReviewCard id={r.id} variant="full" /></li>
+            {i === 3 && (
+              <li class="masonry__photo" data-topics="dumplings">
+                <figure class="frame ratio-4-5"><Photo photo="steamed-dumplings" focus="50-65" sizes="(min-width: 64em) 380px, 50vw" maxWidth={420} /></figure>
+              </li>
+            )}
+            {i === 10 && (
+              <li class="masonry__photo" data-topics="skewers">
+                <figure class="frame ratio-4-5"><Photo photo="lamb-skewers" focus="50-50" sizes="(min-width: 64em) 380px, 50vw" maxWidth={420} /></figure>
+              </li>
+            )}
+          </>
+        ))}
+      </ul>
+
+      <div class="write">
+        <span class="seal" lang="zh-Hans" aria-hidden="true">谢谢</span>
+        <div>
+          <h2 class="h3">Enjoyed your meal?</h2>
+          <p>Reviews help other diners find our little kitchen. Thank you for sharing yours.</p>
+        </div>
+        <a class="btn btn-ghost" href={SITE.links.googleReviews} target="_blank" rel="noopener">Review us on Google <Icon name="ext" /><span class="sr-only"> (opens in a new tab)</span></a>
+      </div>
+    </div>
+  </section>
+
+  <CtaBand title="See what everyone’s talking about." />
+</BaseLayout>
+
+<script>
+  const group = document.querySelector<HTMLElement>('[data-review-filters]');
+  const items = [...document.querySelectorAll<HTMLElement>('[data-review-list] > li')];
+  const count = document.querySelector<HTMLElement>('[data-review-count]');
+
+  group?.addEventListener('click', (event) => {
+    const button = (event.target as HTMLElement).closest<HTMLButtonElement>('button[data-topic]');
+    if (!button) return;
+    const topic = button.dataset.topic ?? 'all';
+    group.querySelectorAll('button').forEach((b) => b.setAttribute('aria-pressed', String(b === button)));
+    let shown = 0;
+    items.forEach((li) => {
+      const match = topic === 'all' || (li.dataset.topics ?? '').split(' ').includes(topic);
+      li.hidden = !match;
+      if (match && !li.classList.contains('masonry__photo')) shown += 1;
+    });
+    if (count) count.textContent = `Showing ${shown} review${shown === 1 ? '' : 's'}`;
+  });
+</script>
+
+<style>
+  .reviews-top {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 2rem 4rem;
+    align-items: end;
+    padding-bottom: 2rem;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .reviews-note {
+    margin-top: 0.8rem;
+    max-width: 60ch;
+  }
+
+  .filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin: 2rem 0 2.5rem;
+  }
+
+  .filter {
+    min-height: 44px;
+    padding: 0 1rem;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    background: var(--rice);
+    color: var(--espresso);
+    font-weight: 500;
+    font-size: 0.92rem;
+    cursor: pointer;
+  }
+
+  .filter:hover {
+    border-color: var(--espresso);
+  }
+
+  .filter[aria-pressed='true'] {
+    background: var(--espresso);
+    border-color: var(--espresso);
+    color: var(--rice);
+  }
+
+  .masonry {
+    columns: 3 300px;
+    column-gap: 1.75rem;
+  }
+
+  .masonry > li {
+    break-inside: avoid;
+    margin-bottom: 2.25rem;
+  }
+
+  .masonry > li[hidden] {
+    display: none;
+  }
+
+  .masonry__photo .frame {
+    box-shadow: 0 0 0 1px var(--rule);
+  }
+
+  .write {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    gap: 1.5rem;
+    align-items: center;
+    margin-top: 2rem;
+    padding: clamp(1.5rem, 3vw, 2.2rem);
+    background: var(--paper-2);
+    box-shadow: 0 0 0 1px var(--rule);
+  }
+
+  .write p {
+    margin-top: 0.4rem;
+    color: var(--tea);
+  }
+
+  @media (max-width: 56.24em) {
+    .reviews-top {
+      grid-template-columns: 1fr;
+    }
+    .write {
+      grid-template-columns: 1fr;
+      justify-items: start;
+    }
+  }
+</style>

@@ -1,0 +1,51 @@
+---
+/**
+ * Responsive photo from the register (src/data/photos.ts): AVIF + WebP,
+ * widths capped at the source resolution, lazy by default.
+ * Enforces the photo rules at build time: restricted photos can't be heroes.
+ */
+import { Picture } from 'astro:assets';
+import { PHOTOS, type PhotoKey } from '../data/photos';
+
+export type Focus =
+  | '50-20' | '50-35' | '50-50' | '50-65' | '50-80' | '35-50' | '65-50'
+  | '60-68' | '40-60' | '30-30' | '70-60';
+
+interface Props {
+  photo: PhotoKey;
+  /** The `sizes` attribute: how wide the image renders at each breakpoint. */
+  sizes: string;
+  class?: string;
+  focus?: Focus;
+  /** Above-the-fold hero: eager loading + high fetch priority. */
+  hero?: boolean;
+  alt?: string;
+  /** Maximum rendered width in CSS px, used to trim the srcset. */
+  maxWidth?: number;
+}
+
+const { photo: key, sizes, class: className, focus = '50-50', hero = false, alt, maxWidth = 1800 } = Astro.props;
+const entry = PHOTOS[key];
+
+if (hero && 'restricted' in entry && entry.restricted) {
+  throw new Error(`Photo "${key}" is restricted and cannot be used as a hero image.`);
+}
+
+const CANDIDATE_WIDTHS = [400, 640, 900, 1200, 1500, 1800];
+const cap = Math.min(entry.src.width, maxWidth * 2, 1800);
+const widths = [...new Set([...CANDIDATE_WIDTHS.filter((w) => w < cap), cap])];
+const classes = [className, `focus-${focus}`].filter(Boolean).join(' ');
+---
+<Picture
+  src={entry.src}
+  alt={alt ?? entry.alt}
+  widths={widths}
+  sizes={sizes}
+  formats={['avif', 'webp']}
+  fallbackFormat="jpg"
+  quality="mid"
+  class={classes}
+  loading={hero ? 'eager' : 'lazy'}
+  decoding={hero ? 'sync' : 'async'}
+  fetchpriority={hero ? 'high' : 'auto'}
+/>

@@ -1,0 +1,84 @@
+---
+import Icon from './Icon.astro';
+import { SITE, telHref } from '../data/site';
+---
+<nav class="action-bar" aria-label="Quick actions" data-action-bar>
+  <a href={telHref}><Icon name="phone" />Call</a>
+  <a href={SITE.links.directions} target="_blank" rel="noopener">
+    <Icon name="pin" />Directions<span class="sr-only"> (opens Google Maps in a new tab)</span>
+  </a>
+  <a class="primary" href="/booking/">Reserve</a>
+</nav>
+
+<script>
+  import '../scripts/action-bar';
+</script>
+
+<style>
+  .action-bar {
+    display: none;
+  }
+
+  @media (max-width: 47.99em) {
+    .action-bar {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 40;
+      display: grid;
+      grid-template-columns: 1fr 1fr 1.2fr;
+      gap: 0.5rem;
+      padding: 0.55rem var(--gutter) calc(0.55rem + env(safe-area-inset-bottom));
+      background: rgb(246 239 227 / 0.97);
+      box-shadow: 0 -1px 0 var(--rule);
+      visibility: hidden;
+      transform: translateY(110%);
+      transition:
+        transform var(--dur) var(--ease),
+        visibility 0s linear var(--dur);
+    }
+
+    .action-bar[data-visible] {
+      visibility: visible;
+      transform: none;
+      transition: transform var(--dur) var(--ease);
+    }
+
+    :global(html[data-scroll-locked]) .action-bar {
+      visibility: hidden;
+    }
+
+    .action-bar a {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.45rem;
+      min-width: 0;
+      min-height: 46px;
+      border-radius: var(--radius);
+      font-weight: 600;
+      font-size: 0.92rem;
+      text-decoration: none;
+      color: var(--espresso);
+      box-shadow: inset 0 0 0 1px var(--line);
+      white-space: nowrap;
+    }
+
+    .action-bar a :global(svg) {
+      width: 18px;
+      height: 18px;
+      flex: none;
+    }
+
+    .action-bar a.primary {
+      background: var(--cinnabar);
+      color: #fff;
+      box-shadow: none;
+    }
+
+    :global(body) {
+      padding-bottom: calc(66px + env(safe-area-inset-bottom));
+    }
+  }
+</style>

@@ -1,0 +1,10 @@
+---
+import Icon from './Icon.astro';
+
+interface Props {
+  class?: string;
+}
+---
+<span class:list={['stars', Astro.props.class]} role="img" aria-label="5 out of 5 stars">
+  <Icon name="star" /><Icon name="star" /><Icon name="star" /><Icon name="star" /><Icon name="star" />
+</span>

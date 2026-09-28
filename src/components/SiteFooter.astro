@@ -1,0 +1,256 @@
+---
+import Icon from './Icon.astro';
+import { FOOTER_NAV, LEGAL_NAV } from '../data/nav';
+import { SITE, formatTime, telHref } from '../data/site';
+
+const year = new Date().getFullYear();
+---
+<footer class="site-footer on-dark">
+  <div class="wrap">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a class="brand" href="/" aria-label={`${SITE.name} ${SITE.nameZh}, home`}>
+          <Icon name="moon" class="brand-mark" />
+          <span class="brand-text">
+            <span class="brand-en">Starry Coop</span>
+            <span class="brand-zh" lang="zh-Hans" aria-hidden="true">星月小馆</span>
+          </span>
+        </a>
+        <p class="footer-tagline">A hidden kitchen tucked away in West Vancouver. Cozy, relaxed and a little different from the usual.</p>
+        <p class="footer-rating">
+          <span class="stars" aria-hidden="true">
+            <Icon name="star" /><Icon name="star" /><Icon name="star" /><Icon name="star" /><Icon name="star" />
+          </span>
+          <a href={SITE.links.googleReviews} target="_blank" rel="noopener">
+            {SITE.rating.value} on Google · {SITE.rating.count} reviews<span class="sr-only"> (opens in a new tab)</span>
+          </a>
+        </p>
+      </div>
+
+      <div>
+        <h2 class="footer-title">Visit <span lang="zh-Hans" aria-hidden="true">到访</span></h2>
+        <address>
+          {SITE.address.street}<br />
+          {SITE.address.city}, {SITE.address.region} {SITE.address.postalCode}<br />
+          <a class="num" href={telHref}>{SITE.phone.display}</a>
+        </address>
+        <ul class="footer-links">
+          <li>
+            <a href={SITE.links.directions} target="_blank" rel="noopener">
+              Directions <Icon name="ext" class="ext" /><span class="sr-only"> (opens Google Maps in a new tab)</span>
+            </a>
+          </li>
+          <li>
+            <a href={SITE.links.uberEats} target="_blank" rel="noopener">
+              Order on Uber Eats <Icon name="ext" class="ext" /><span class="sr-only"> (opens in a new tab)</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+
+      <div>
+        <h2 class="footer-title">Hours <span lang="zh-Hans" aria-hidden="true">营业</span></h2>
+        <dl class="footer-hours num">
+          {SITE.hours.map((h) => (
+            <>
+              <dt>{h.short}</dt>
+              <dd>{formatTime(h.opens)}–{formatTime(h.closes)}</dd>
+            </>
+          ))}
+        </dl>
+        <p class="fine footer-perk"><Icon name="cup" /> Free coffee &amp; ice cream, all day.</p>
+      </div>
+
+      {FOOTER_NAV.map((group) => (
+        <nav aria-label={group.title}>
+          <h2 class="footer-title">{group.title} <span lang="zh-Hans" aria-hidden="true">{group.zh}</span></h2>
+          <ul class="footer-links">
+            {group.links.map((link) => (
+              <li><a href={link.href}>{link.label}</a></li>
+            ))}
+          </ul>
+        </nav>
+      ))}
+    </div>
+
+    <div class="footer-bottom">
+      <p>© {year} {SITE.name} {SITE.nameZh} · {SITE.address.city}, BC</p>
+      <p class="footer-attrs">
+        {SITE.googleAttributes.slice(0, 3).join(' · ')}<sup aria-hidden="true">*</sup>
+        <span class="footnote">*As listed on our Google Business Profile. Photos: Starry Coop on Google.</span>
+      </p>
+      <ul class="footer-legal">
+        {LEGAL_NAV.map((link) => (
+          <li><a href={link.href}>{link.label}</a></li>
+        ))}
+      </ul>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    background: var(--ink);
+    padding-top: clamp(3.5rem, 6vw, 5.5rem);
+    padding-bottom: 2rem;
+  }
+
+  .site-footer a {
+    text-decoration: none;
+  }
+
+  .site-footer a:hover {
+    text-decoration: underline;
+    text-underline-offset: 0.25em;
+  }
+
+  .footer-grid {
+    display: grid;
+    grid-template-columns: 1.5fr repeat(4, 1fr);
+    gap: 2.5rem;
+  }
+
+  .brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.7rem;
+    color: var(--parch-text);
+  }
+
+  .brand :global(.brand-mark) {
+    width: 34px;
+    height: 34px;
+  }
+
+  .brand-text {
+    display: flex;
+    flex-direction: column;
+    line-height: 1;
+  }
+
+  .brand-en {
+    font: italic 500 1.28rem / 1 var(--font-display);
+  }
+
+  .brand-zh {
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.3em;
+    margin-top: 0.3rem;
+  }
+
+  .footer-tagline {
+    margin-top: 1.2rem;
+    color: var(--dim-on-night);
+    max-width: 30ch;
+    font: italic 300 1.08rem / 1.5 var(--font-display);
+  }
+
+  .footer-rating {
+    margin-top: 1.2rem;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-size: 0.9rem;
+  }
+
+  .footer-title {
+    display: flex;
+    gap: 0.6rem;
+    margin-bottom: 1rem;
+    font: 600 0.78rem var(--font-body);
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--dim-on-night);
+  }
+
+  .footer-title span {
+    font-family: var(--font-cjk-display);
+    letter-spacing: 0.1em;
+    color: var(--cinnabar-on-dark);
+  }
+
+  address {
+    line-height: 1.6;
+  }
+
+  .footer-links {
+    display: grid;
+    gap: 0.5rem;
+    margin-top: 1rem;
+  }
+
+  nav .footer-links {
+    margin-top: 0;
+  }
+
+  .footer-links :global(.ext) {
+    display: inline;
+    width: 13px;
+    height: 13px;
+    vertical-align: -1px;
+    opacity: 0.8;
+  }
+
+  .footer-hours {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 0.35rem 1rem;
+  }
+
+  .footer-hours dt {
+    color: var(--dim-on-night);
+  }
+
+  .footer-perk {
+    margin-top: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+  }
+
+  .footer-perk :global(svg) {
+    width: 16px;
+    height: 16px;
+    color: var(--cinnabar-on-dark);
+  }
+
+  .footer-bottom {
+    margin-top: clamp(3rem, 5vw, 4.5rem);
+    padding-top: 1.4rem;
+    border-top: 1px solid rgb(243 234 219 / 0.16);
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 0.8rem 2rem;
+    font-size: 0.84rem;
+    color: var(--dim-on-night);
+  }
+
+  .footer-attrs .footnote {
+    display: block;
+    margin-top: 0.25rem;
+    font-size: 0.78rem;
+  }
+
+  .footer-legal {
+    display: flex;
+    gap: 1.2rem;
+  }
+
+  @media (max-width: 68em) {
+    .footer-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    .footer-brand {
+      grid-column: 1 / -1;
+    }
+  }
+
+  @media (max-width: 29.99em) {
+    .footer-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

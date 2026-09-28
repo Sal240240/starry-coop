@@ -1,0 +1,84 @@
+---
+import { Font, getImage } from 'astro:assets';
+import '../styles/global.css';
+import ActionBar from '../components/ActionBar.astro';
+import IconSprite from '../components/IconSprite.astro';
+import JsonLd from '../components/JsonLd.astro';
+import Seo from '../components/Seo.astro';
+import SiteFooter from '../components/SiteFooter.astro';
+import SiteHeader from '../components/SiteHeader.astro';
+import { PHOTOS, type PhotoKey } from '../data/photos';
+import { breadcrumbSchema, restaurantSchema, webPageSchema, type Crumb } from '../lib/schema';
+
+interface Props {
+  title: string;
+  description: string;
+  ogPhoto: PhotoKey;
+  /** `overlay` for pages that open with a full-bleed photo hero. */
+  headerTone?: 'overlay' | 'solid';
+  /** Breadcrumb trail (excluding Home) for BreadcrumbList JSON-LD. */
+  crumbs?: Crumb[];
+  schema?: Record<string, unknown>[];
+  noindex?: boolean;
+}
+
+const { title, description, ogPhoto, headerTone = 'overlay', crumbs = [], schema = [], noindex = false } = Astro.props;
+const origin = Astro.site!.origin;
+const path = Astro.url.pathname;
+
+const schemaPhotos: PhotoKey[] = ['noodle-spread', 'storefront-sign', 'dining-room-mural'];
+const schemaImages = await Promise.all(
+  schemaPhotos.map(async (key) => {
+    const img = await getImage({ src: PHOTOS[key].src, width: 1200, format: 'jpg', quality: 78 });
+    return new URL(img.src, Astro.site).href;
+  }),
+);
+
+const structuredData: Record<string, unknown>[] = [
+  restaurantSchema(origin, schemaImages),
+  webPageSchema(origin, path, title, description),
+  ...(crumbs.length > 0 ? [breadcrumbSchema(origin, [{ name: 'Home', path: '/' }, ...crumbs])] : []),
+  ...schema,
+];
+---
+<!doctype html>
+<html lang="en-CA">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <Font cssVariable="--font-fraunces" preload />
+    <Font cssVariable="--font-instrument" />
+    <Seo title={title} description={description} ogPhoto={ogPhoto} noindex={noindex} />
+    <meta name="theme-color" content="#F6EFE3" />
+    <meta name="format-detection" content="telephone=no" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="/favicon.ico" sizes="32x32" />
+    <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+    <JsonLd data={structuredData} />
+  </head>
+  <body data-header-tone={headerTone}>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <IconSprite />
+    <SiteHeader tone={headerTone} />
+    <main id="main" tabindex="-1" class:list={[{ 'main--offset': headerTone === 'solid' }]}>
+      <slot />
+    </main>
+    <SiteFooter />
+    <ActionBar />
+    <script>
+      import '../scripts/open-status';
+    </script>
+  </body>
+</html>
+
+<style is:global>
+  main:focus {
+    outline: none;
+  }
+
+  .main--offset {
+    padding-top: var(--header-h);
+  }
+</style>

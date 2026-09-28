@@ -1,0 +1,47 @@
+---
+/** Inline pull-quote from a Google review, attributed and linked to the source. */
+import Stars from './Stars.astro';
+import { reviewById } from '../data/reviews';
+import { SITE } from '../data/site';
+
+interface Props {
+  id: string;
+  class?: string;
+}
+
+const review = reviewById(Astro.props.id);
+const isZh = review.lang === 'zh-Hans';
+---
+<figure class:list={['quote-inline', Astro.props.class]}>
+  <blockquote cite={SITE.links.googleReviews}>
+    <p lang={isZh ? 'zh-Hans' : undefined}>“{review.quote}”</p>
+    {isZh && review.quoteTranslation && (
+      <p class="quote-translation"><span class="fine">Translated from Chinese:</span> “{review.quoteTranslation}”</p>
+    )}
+  </blockquote>
+  <figcaption>
+    <Stars />
+    <span>{review.author === 'Google reviewer' ? 'Google review' : `${review.author} · Google review`}</span>
+  </figcaption>
+</figure>
+
+<style>
+  figcaption {
+    margin-top: 0.6rem;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.3rem 0.6rem;
+    font-size: 0.85rem;
+    color: var(--tea);
+  }
+
+  :global(.on-dark) figcaption {
+    color: var(--dim-on-night);
+  }
+
+  .quote-translation {
+    margin-top: 0.5rem;
+    font: italic 400 1rem / 1.5 var(--font-display) !important;
+  }
+</style>

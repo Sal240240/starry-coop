@@ -1,0 +1,124 @@
+---
+/** Review card: quote-mark seal, verbatim text, stars, attribution. */
+import Icon from './Icon.astro';
+import Stars from './Stars.astro';
+import { REVIEW_TOPIC_LABELS, reviewById } from '../data/reviews';
+
+interface Props {
+  id: string;
+  /** `quote` shows the short pull-quote; `full` the longer excerpt. */
+  variant?: 'quote' | 'full';
+  headingLevel?: 'h3' | 'h4';
+}
+
+const { id, variant = 'quote' } = Astro.props;
+const review = reviewById(id);
+const isZh = review.lang === 'zh-Hans';
+const body = variant === 'full' ? review.text : review.quote;
+const translation = variant === 'full' ? review.translation : review.quoteTranslation;
+const topics = review.topics.slice(0, 2).map((t) => REVIEW_TOPIC_LABELS[t]).join(' · ');
+---
+<article class="review" data-topics={review.topics.join(' ')}>
+  <span class="qmark" aria-hidden="true"><Icon name="quote" /></span>
+  <blockquote>
+    <p lang={isZh ? 'zh-Hans' : undefined}>“{body}”</p>
+  </blockquote>
+  {isZh && translation && (
+    <details class="translation">
+      <summary>Read our English translation</summary>
+      <p>{translation}</p>
+    </details>
+  )}
+  <footer>
+    <span class="who">
+      <strong>{review.author}</strong>
+      <span>{topics}</span>
+    </span>
+    <Stars />
+  </footer>
+</article>
+
+<style>
+  .review {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    background: var(--rice);
+    padding: 2.4rem clamp(1.3rem, 2vw, 1.9rem) 1.5rem;
+    box-shadow: 0 0 0 1px var(--rule);
+  }
+
+  .qmark {
+    position: absolute;
+    top: -14px;
+    left: clamp(1.3rem, 2vw, 1.9rem);
+    display: grid;
+    place-items: center;
+    width: 34px;
+    height: 34px;
+    background: var(--cinnabar);
+    color: var(--paper);
+    border-radius: var(--radius);
+    transform: rotate(-4deg);
+  }
+
+  .qmark :global(svg) {
+    width: 16px;
+    height: 16px;
+  }
+
+  blockquote p {
+    font: 400 1.06rem / 1.6 var(--font-display);
+    color: var(--ink);
+  }
+
+  blockquote p[lang='zh-Hans'] {
+    font-family: var(--font-cjk);
+    font-size: 1.02rem;
+    line-height: 1.85;
+  }
+
+  .translation {
+    margin-top: 0.8rem;
+    font-size: 0.92rem;
+    color: var(--tea);
+  }
+
+  .translation summary {
+    display: flex;
+    align-items: center;
+    min-height: 44px;
+    cursor: pointer;
+    font-weight: 600;
+    color: var(--cinnabar-deep);
+  }
+
+  footer {
+    margin-top: auto;
+    padding-top: 1.2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.8rem;
+    border-top: 1px solid var(--rule);
+    font-size: 0.84rem;
+    color: var(--tea);
+  }
+
+  blockquote + footer,
+  .translation + footer {
+    margin-top: auto;
+  }
+
+  blockquote {
+    margin-bottom: 1.2rem;
+  }
+
+  .who strong {
+    display: block;
+    color: var(--espresso);
+    font-weight: 600;
+    font-size: 0.92rem;
+  }
+</style>
